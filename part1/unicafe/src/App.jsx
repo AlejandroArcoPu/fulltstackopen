@@ -1,19 +1,48 @@
 import { useState } from 'react'
 
-const History = ({text,value}) => <p>{text} {value}</p>
-
 const Header = ({text}) => <h1>{text}</h1>
 
 const Button = ({onClick,text}) => <button onClick={onClick}>{text}</button>
 
+const Metric = ({text,value}) => <p>{text} {value}</p>
+
+const Statistics = (props) => {
+  if (props.all !== 0){
+    return(
+      <div>
+        {
+          Object.keys(props.statistics).map(keys => 
+            <Metric key={keys} text={keys} value={keys === 'positive' ? 
+              `${props.statistics[keys]} %` : props.statistics[keys]} // To put the percentage when it is only positive
+            />
+          )
+        }
+      </div>
+    )
+  }
+  return (
+    <div>
+      <p>No feedback given</p>
+    </div>
+  )
+}
+
 const App = () => {
-  // guarda los clics de cada botón en su propio estado
   const [good, setGood] = useState(0)
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
   const [all, setAll] = useState(0)
   const [percentage, setPercentage] = useState(0)
   const [average, setAverage] = useState(0)
+
+  const statistics = {
+    'good': good,
+    'bad': bad, 
+    'neutral': neutral,
+    'all': all,
+    'average': average,
+    'positive': percentage
+  }
 
   const handleOnClikGood = () => {
     setGood(good + 1)
@@ -57,12 +86,7 @@ const App = () => {
       <Button onClick={handleOnClikNeutral} text='neutral'/>
       <Button onClick={handleOnClikBad} text='bad'/>
       <Header text='statistics'/>
-      <History text='good' value={good}/>
-      <History text='neutral' value={neutral}/>
-      <History text='bad' value={bad}/>
-      <History text='all' value={all}/>
-      <History text='average' value={average}/>
-      <History text='positive' value={`${percentage}%`}/>
+      <Statistics statistics={statistics} all={all}/>
     </div>
   )
 }
