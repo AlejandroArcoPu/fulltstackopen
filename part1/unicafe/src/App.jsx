@@ -11,12 +11,44 @@ const App = () => {
   const [good, setGood] = useState(0)
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
+  const [all, setAll] = useState(0)
+  const [percentage, setPercentage] = useState(0)
+  const [average, setAverage] = useState(0)
 
-  const handleOnClikGood = () => setGood(good + 1)
+  const handleOnClikGood = () => {
+    setGood(good + 1)
+    setAll(all + 1)
+    const updatedGood = good + 1
+    const updatedAll = all + 1
+    const updatedResult = (updatedGood/updatedAll)*100
+    setPercentage(updatedResult)
+
+    const averageResult = (updatedGood - bad)/updatedAll
+    setAverage(averageResult)
+  }
   
-  const handleOnClikNeutral = () => setNeutral(neutral + 1)
+  const handleOnClikNeutral = () => {
+    setNeutral(neutral + 1)
+    setAll(all + 1)
+    const updatedAll = all + 1
+    const updatedResult = (good/updatedAll)*100
+    setPercentage(updatedResult)
+
+    const averageResult = (good - bad)/updatedAll
+    setAverage(averageResult)
+  }
   
-  const handleOnClikBad = () => setBad(bad + 1)
+  const handleOnClikBad = () => {
+    setBad(bad + 1)
+    setAll(all + 1)
+    const updatedAll = all + 1
+    const updatedResult = (good/updatedAll)*100
+    setPercentage(updatedResult)
+
+    const updatedBad = bad + 1
+    const averageResult = (good - updatedBad)/updatedAll
+    setAverage(averageResult)
+  }
 
   return (
     <div>
@@ -28,6 +60,9 @@ const App = () => {
       <History text='good' value={good}/>
       <History text='neutral' value={neutral}/>
       <History text='bad' value={bad}/>
+      <History text='all' value={all}/>
+      <History text='average' value={average}/>
+      <History text='positive' value={`${percentage}%`}/>
     </div>
   )
 }
