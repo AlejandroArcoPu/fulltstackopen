@@ -4,12 +4,13 @@ const Header = ({text}) => <h1>{text}</h1>
 
 const Button = ({onClick,text}) => <button onClick={onClick}>{text}</button>
 
-const StatisticLine = ({text,value}) => <p>{text} {value}</p>
+const StatisticLine = ({text,value}) => <tr><td>{text}</td><td>{value}</td></tr>
 
 const Statistics = (props) => {
   if (props.all !== 0){
     return(
-      <div>
+      <table>
+        <tbody>
         {
           Object.keys(props.statistics).map(keys => 
             <StatisticLine  key={keys} text={keys} value={keys === 'positive' ? 
@@ -17,7 +18,8 @@ const Statistics = (props) => {
             />
           )
         }
-      </div>
+        </tbody>
+      </table>
     )
   }
   return (
