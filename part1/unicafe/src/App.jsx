@@ -4,7 +4,7 @@ const Header = ({text}) => <h1>{text}</h1>
 
 const Button = ({onClick,text}) => <button onClick={onClick}>{text}</button>
 
-const Metric = ({text,value}) => <p>{text} {value}</p>
+const StatisticLine = ({text,value}) => <p>{text} {value}</p>
 
 const Statistics = (props) => {
   if (props.all !== 0){
@@ -12,7 +12,7 @@ const Statistics = (props) => {
       <div>
         {
           Object.keys(props.statistics).map(keys => 
-            <Metric key={keys} text={keys} value={keys === 'positive' ? 
+            <StatisticLine  key={keys} text={keys} value={keys === 'positive' ? 
               `${props.statistics[keys]} %` : props.statistics[keys]} // To put the percentage when it is only positive
             />
           )
