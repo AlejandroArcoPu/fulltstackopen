@@ -1,5 +1,6 @@
 import Header from './Header'
 import Part from './Part'
+import Total from './Total'
 
 const Course = ({course}) => {
     return (
@@ -8,6 +9,7 @@ const Course = ({course}) => {
             {course.parts.map(c => 
                 <Part key={c.id} name={c.name} exercises={c.exercises}/>
             )}
+            <Total parts={course.parts}/>
         </div>
     )
 }
