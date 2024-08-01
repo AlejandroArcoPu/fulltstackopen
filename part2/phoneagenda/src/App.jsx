@@ -26,6 +26,10 @@ const App = () => {
     setNewNumber('')
   }
 
+  const personsToShow = newFilter.length !== 0 
+  ? persons.filter(person => person.name.toLowerCase().includes(newFilter.toLowerCase()))
+  : persons
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -45,7 +49,7 @@ const App = () => {
       <h2>Numbers</h2>
       <ul>
         {
-          persons.map(person => 
+          personsToShow.map(person => 
             <li key={person.id}>{person.name} {person.number}</li>
           )
         }
