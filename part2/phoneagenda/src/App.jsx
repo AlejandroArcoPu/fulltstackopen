@@ -22,15 +22,17 @@ const App = () => {
     event.preventDefault()
     const personObject = {
       name: newName,
-      number: newNumber,
-      id: persons.length + 1
+      number: newNumber
     }
     persons.some(person => person.name === personObject.name.trim()) 
     ? alert(`${newName} is already added to phonebook`) 
-    : setPersons(persons.concat(personObject))
-    
-    setNewName('')
-    setNewNumber('')
+    : axios
+          .post('http://localhost:3001/persons', personObject)
+          .then(response => {
+            setPersons(persons.concat(response.data))
+            setNewName('')
+            setNewNumber('')
+          })
   }
 
   const handleOnChangeName = (event) => setNewName(event.target.value)
