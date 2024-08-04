@@ -39,6 +39,16 @@ const App = () => {
   
   const handleOnChangeNumber = (event) => setNewNumber(event.target.value)
 
+  const deletePerson = (person) => {
+    if (confirm(`Delete ${person.name} ?`)) {
+      personService
+        .deletePerson(person.id)
+        .then(person => {
+          setPersons(persons.filter(p => p.id !== person.id))
+        })
+    }
+  }
+
   const personsToShow = newFilter.length !== 0 
   ? persons.filter(person => person.name.toLowerCase().includes(newFilter.toLowerCase()))
   : persons
@@ -50,7 +60,7 @@ const App = () => {
       <h3>add a new</h3>
       <PersonForm addPerson={addPerson} newName={newName} newNumber={newNumber} onChangeName={handleOnChangeName} onChangeNumber={handleOnChangeNumber}/>
       <h3>Numbers</h3>
-      <Persons persons={personsToShow}/>
+      <Persons persons={personsToShow} deletePerson={deletePerson}/>
     </div>
   )
 }
