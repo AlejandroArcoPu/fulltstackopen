@@ -1,13 +1,13 @@
 # Part 2
 
-# countrydata
+# courseinfo
 
-Contains exercises from 2.18 to 2.20
+Contains exercises from 2.1 to 2.5
 
 # phoneagenda
 
 Contains exercises from 2.6 to 2.17
 
-# courseinfo
+# countrydata
 
-Contains exercises from 2.1 to 2.5
+Contains exercises from 2.18 to 2.20
