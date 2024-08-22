@@ -77,7 +77,7 @@ const App = () => {
     if (confirm(`Delete ${person.name} ?`)) {
       personService
         .deletePerson(person.id)
-        .then(person => {
+        .then( () => {
           setPersons(persons.filter(p => p.id !== person.id))
           setStyleType('success')
           setMessage(`Deleted ${person.name}`)
