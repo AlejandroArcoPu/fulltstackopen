@@ -1,8 +1,8 @@
 const { test, describe } = require('node:test')
 const assert = require('assert')
-const mostBlogs = require('../utils/list_helper').mostBlogs
+const mostLikes = require('../utils/list_helper').mostLikes
 
-describe('most blogs',  () => {
+describe('most likes',  () => {
     const emptyBlogs = []
     const oneElementBlogs = [
         {
@@ -65,19 +65,18 @@ describe('most blogs',  () => {
         }  
     ]
 
-    test('of empty blogs is empty object' , () => {
-        const result = mostBlogs(emptyBlogs)
+    test('of empty blogs is empty object', () => {
+        const result = mostLikes(emptyBlogs)
         assert.deepStrictEqual(result,{})
     })
 
-    test('of one element blog list is the author of this blog', () => {
-        const result = mostBlogs(oneElementBlogs)
-        assert.deepStrictEqual(result,{author: 'Edsger W. Dijkstra', blogs: 1})
+    test('of one element blog is the same author', () => {
+        const result = mostLikes(oneElementBlogs)
+        assert.deepStrictEqual(result, {author: 'Edsger W. Dijkstra', likes: 5})
     })
 
-    test('of one many blog list is the author with more blogs', () => {
-        const result = mostBlogs(manyElementBlogs)
-        assert.deepStrictEqual(result,{author: 'Robert C. Martin', blogs: 3})
+    test('of many elements blogs is the author that has more sum of likes', () => {
+        const result = mostLikes(manyElementBlogs)
+        assert.deepStrictEqual(result,{author:'Edsger W. Dijkstra', likes: 17})
     })
-
 })
