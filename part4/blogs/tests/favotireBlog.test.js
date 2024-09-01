@@ -42,17 +42,17 @@ describe('favorite blog',  () => {
         }
     ]
 
-    test('of empty blogs', () => {
+    test('of empty blogs is empty object', () => {
         const result = favoriteBlog(emptyBlogs)
         assert.deepStrictEqual(result,{})
     })
 
-    test('of one element blogs', () => {
+    test('of one element blogs is the same object', () => {
         const result = favoriteBlog(oneElementBlogs)
         assert.deepStrictEqual(result,oneElementBlogs[0])
     })
 
-    test('of many blogs', () => {
+    test('of many blogs is the one that has more likes', () => {
         const result = favoriteBlog(manyElementBlogs)
         assert.deepStrictEqual(result,manyElementBlogs[1])
     })

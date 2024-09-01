@@ -43,17 +43,17 @@ describe('total likes', () => {
         }      
     ]
 
-    test('of empty blogs', () => {
+    test('of empty blogs is 0 likes', () => {
         const result = totalLikes(emptyBlogs)
         assert.strictEqual(result,0)
     })
 
-    test('of one element blogs', () => {
+    test('of one element blogs is the likes of the element', () => {
         const result = totalLikes(listWithOneBlog)
         assert.strictEqual(result,5)
     })
 
-    test('of many blogs', () => {
+    test('of many blogs is the sum of all the entries', () => {
         const result = totalLikes(listWithManyBlogs)
         assert.strictEqual(result,15)
     })
