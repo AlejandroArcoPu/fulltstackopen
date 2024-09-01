@@ -43,7 +43,8 @@ describe('favorite blog',  () => {
     ]
 
     test('of empty blogs', () => {
-        assert.deepStrictEqual(favoriteBlog(emptyBlogs),{})
+        const result = favoriteBlog(emptyBlogs)
+        assert.deepStrictEqual(result,{})
     })
 
     test('of one element blogs', () => {

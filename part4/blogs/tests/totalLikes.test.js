@@ -45,13 +45,11 @@ describe('total likes', () => {
 
     test('of empty blogs', () => {
         const result = totalLikes(emptyBlogs)
-
         assert.strictEqual(result,0)
     })
 
     test('of one element blogs', () => {
         const result = totalLikes(listWithOneBlog)
-
         assert.strictEqual(result,5)
     })
 
