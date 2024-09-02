@@ -31,7 +31,30 @@ describe('api blogs', () => {
 
   test('blogs has id as unique identifier', async () => {
     const response = await api.get('/api/blogs')
-    assert.strictEqual('id' in response.body[0], true)
+    assert('id' in response.body[0])
+  })
+
+  test('a valid blog can be added', async () => {
+    const newBlog = {
+      id: '1a234b567b89a676234d17fa',
+      title: 'Alejandros book',
+      author: 'Alejandro Arco',
+      url: 'https://test.com',
+      likes: 10,
+    }
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type',/application\/json/)
+    
+    const blogsEnd = await api
+      .get('/api/blogs')
+
+    assert.strictEqual(blogsEnd.body.length,helper.initialBlogs.length + 1)
+    const titleList = blogsEnd.body.map(b => b.title)
+    assert(titleList.includes('Alejandros book'))
   })
 
   after(async () => {
