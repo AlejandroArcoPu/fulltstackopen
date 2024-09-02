@@ -35,6 +35,9 @@ const initialBlogs = [
   }
 ]
 
+const blogsInBd = await Blog.find({})
+
 module.exports = {
-  initialBlogs
+  initialBlogs,
+  blogsInBd
 }

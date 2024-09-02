@@ -39,7 +39,7 @@ describe('api blogs', () => {
       id: '1a234b567b89a676234d17fa',
       title: 'Alejandros book',
       author: 'Alejandro Arco',
-      url: 'https://test.com',
+      url: 'https://alejandrosbook.com',
       likes: 10,
     }
 
@@ -49,11 +49,10 @@ describe('api blogs', () => {
       .expect(201)
       .expect('Content-Type',/application\/json/)
     
-    const blogsEnd = await api
-      .get('/api/blogs')
+    const blogsEnd = helper.blogsInBd
 
-    assert.strictEqual(blogsEnd.body.length,helper.initialBlogs.length + 1)
-    const titleList = blogsEnd.body.map(b => b.title)
+    assert.strictEqual(blogsEnd.length,helper.initialBlogs.length + 1)
+    const titleList = blogsEnd.map(b => b.title)
     assert(titleList.includes('Alejandros book'))
   })
 
