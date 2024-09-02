@@ -56,6 +56,24 @@ describe('api blogs', () => {
     assert(titleList.includes('Alejandros book'))
   })
 
+  test('a blog without title can not be added', async () => {
+    const invalidTitleBlog = {
+      id: '1a234b567b89a676234d17fa',
+      author: 'Alejandro Arco',
+      url: 'https://alejandrosbook.com',
+      likes: 10,
+    }
+
+    await api
+      .post('/api/blogs')
+      .send(invalidTitleBlog)
+      .expect(400)
+
+    const blogsEnd = await helper.blogsInBd()
+
+    assert.strictEqual(blogsEnd.length,helper.initialBlogs.length)
+  })
+
   after(async () => {
     await mongoose.connection.close()
   })
