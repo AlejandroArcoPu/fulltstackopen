@@ -6,6 +6,7 @@ const logger = require('./utils/logger')
 const blogsRouter = require('./controllers/blog')
 const middleware = require('./utils/middleware')
 const morgan = require('morgan')
+require('express-async-errors')
 const app = express()
 
 logger.info('connecting to',config.MONGODB_URI)

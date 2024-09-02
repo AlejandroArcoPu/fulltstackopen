@@ -48,8 +48,8 @@ describe('api blogs', () => {
       .send(newBlog)
       .expect(201)
       .expect('Content-Type',/application\/json/)
-    
-    const blogsEnd = helper.blogsInBd
+
+    const blogsEnd = await helper.blogsInBd()
 
     assert.strictEqual(blogsEnd.length,helper.initialBlogs.length + 1)
     const titleList = blogsEnd.map(b => b.title)
