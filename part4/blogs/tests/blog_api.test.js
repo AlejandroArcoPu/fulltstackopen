@@ -123,7 +123,7 @@ describe('when some blogs are saved', () => {
         .expect(204)
 
       const blogsEnd = await helper.blogsInBd()
-      const blogsIds = blogsEnd.map( b => b.id)
+      const blogsIds = blogsEnd.map(b => b.id)
       assert(!blogsIds.includes(blogToDelete.id))
       assert.strictEqual(blogsStart.length - 1,blogsEnd.length)
     })
@@ -159,6 +159,64 @@ describe('when some blogs are saved', () => {
       const blogsEnd = await helper.blogsInBd()
 
       assert.strictEqual(blogsStart.length, blogsEnd.length)
+
+    })
+  })
+
+  describe('update of a blog', () => {
+    test('a valid blog can be updated', async () => {
+      const newBlog =  {
+        title: 'Second class tests',
+        author: 'Bob C. Martin',
+        url: 'https://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll',
+        likes: 10,
+      }
+      const blogsStart = await helper.blogsInBd()
+      const blogToBeUpdated = blogsStart[3]
+
+      await api
+        .put(`/api/blogs/${blogToBeUpdated.id}`)
+        .send(newBlog)
+        .expect(200)
+        .expect('Content-Type',/application\/json/)
+
+      const blogsEnd = await helper.blogsInBd()
+      assert(blogsEnd.some(b => b.title === newBlog.title))
+    })
+
+    test('a invalid blog id can not be updated', async () => {
+      const blogInvalid = {
+        title: 'Alejandros book',
+        id: '1234',
+        author: 'Alejandro Arco',
+        likes: 10,
+      }
+      await api
+        .put(`/api/blogs/${blogInvalid.id}`)
+        .expect(400)
+
+      const blogsEnd = await helper.blogsInBd()
+      const blogsTitles = blogsEnd.map(b => b.title)
+
+      assert(blogsTitles.some(b => b.title !== blogInvalid.title))
+    })
+
+    test('a not found blog id is not updating anything', async () => {
+      const blogNotInBD = {
+        title: 'Alejandros book',
+        id: '1a234b567b89a676234d17fa',
+        author: 'Alejandro Arco',
+        likes: 10,
+      }
+
+      await api
+        .put(`/api/blogs/${blogNotInBD.id}`)
+        .expect(404)
+
+      const blogsEnd = await helper.blogsInBd()
+      const blogTitles = blogsEnd.map(b => b.title)
+
+      assert(blogTitles.some(b => blogNotInBD.title !== b.title))
 
     })
   })
