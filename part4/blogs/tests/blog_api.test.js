@@ -72,8 +72,7 @@ describe('when some blogs are saved', () => {
 
       const blogsEnd = await helper.blogsInBd()
       assert.strictEqual(blogsEnd.length,helper.initialBlogs.length + 1)
-      const newBlogLikes = blogsEnd.find(b =>
-        b.title === 'Alejandros book').likes
+      const newBlogLikes = blogsEnd.find(b => b.title === 'Alejandros book').likes
       assert.strictEqual(newBlogLikes, 0)
     })
 
@@ -113,6 +112,55 @@ describe('when some blogs are saved', () => {
       assert.strictEqual(blogsEnd.length,helper.initialBlogs.length)
     })
 
+  })
+
+  describe('removal of a blog', () => {
+    test('a valid blog can be removed', async () => {
+      const blogsStart = await helper.blogsInBd()
+      const blogToDelete = blogsStart[0]
+      await api
+        .delete(`/api/blogs/${blogToDelete.id}`)
+        .expect(204)
+
+      const blogsEnd = await helper.blogsInBd()
+      const blogsIds = blogsEnd.map( b => b.id)
+      assert(!blogsIds.includes(blogToDelete.id))
+      assert.strictEqual(blogsStart.length - 1,blogsEnd.length)
+    })
+
+    test('a wrong formed id can not be removed', async () => {
+      const blogsStart = await helper.blogsInBd()
+      const blogToDelete = {
+        title: 'Alejandros book',
+        id: '1234',
+        author: 'Alejandro Arco',
+        likes: 10,
+      }
+      await api
+        .delete(`/api/blogs/${blogToDelete.id}`)
+        .expect(400)
+
+      const blogsEnd = await helper.blogsInBd()
+      assert.strictEqual(blogsEnd.length, blogsStart.length)
+    })
+
+    test('a not found id is not removing anything', async () => {
+      const blogNotInBD = {
+        title: 'Alejandros book',
+        id: '1a234b567b89a676234d17fa',
+        author: 'Alejandro Arco',
+        likes: 10,
+      }
+      const blogsStart = await helper.blogsInBd()
+      await api
+        .delete(`/api/blogs/${blogNotInBD.id}`)
+        .expect(404)
+
+      const blogsEnd = await helper.blogsInBd()
+
+      assert.strictEqual(blogsStart.length, blogsEnd.length)
+
+    })
   })
 
   after(async () => {
