@@ -79,7 +79,7 @@ describe('when some users are saved', () => {
     assert.strictEqual(usersAtStart.length,usersAtEnd.length)
   })
 
-  test('an invalid user is not created', async() => {
+  test('a missing parameter in user body is not created', async() => {
     const usersAtStart = await helper.usersInBd()
 
     const invalidUsername = {
@@ -94,6 +94,27 @@ describe('when some users are saved', () => {
 
     assert(result.body.error.includes('User validation failed'))
     const usersAtEnd = await helper.usersInBd()
+    assert.strictEqual(usersAtStart.length,usersAtEnd.length)
+  })
+
+  test('an user with not a proper password length is not created', async() => {
+    const usersAtStart = await helper.usersInBd()
+
+    const newUser = {
+      username: 'BelenAgui',
+      name: 'Belen',
+      password: '12'
+    }
+
+    const result = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    const usersAtEnd = await helper.usersInBd()
+
+    assert.strictEqual(result.body.error,'password length must be greater')
     assert.strictEqual(usersAtStart.length,usersAtEnd.length)
   })
 
