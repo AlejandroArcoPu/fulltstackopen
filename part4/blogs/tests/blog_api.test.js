@@ -14,7 +14,6 @@ describe('when some blogs are saved', () => {
     const blogList = helper.initialBlogs.map(blog => new Blog(blog))
     const blogPromises = blogList.map(blog => blog.save())
     await Promise.all(blogPromises)
-    console.log('done clean bd')
   })
 
   test('blogs are returned as json', async () => {
@@ -33,6 +32,7 @@ describe('when some blogs are saved', () => {
     const response = await api.get('/api/blogs')
     assert('id' in response.body[0])
   })
+
   describe('addition of a new blog', () => {
     test('a valid blog can be added', async () => {
       const newBlog = {

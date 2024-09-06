@@ -10,10 +10,8 @@ blogsRouter.get('/', async (request, response) => {
 
 blogsRouter.post('/', async (request, response) => {
   const body = request.body
-
-  const authorization = request.headers.authorization.replace('Bearer ','')
-
-  const decodedToken= jwt.verify(authorization,process.env.SECRET)
+  console.log(request.token)
+  const decodedToken= jwt.verify(request.token,process.env.SECRET)
 
   const user = await User.findById(decodedToken.id)
 

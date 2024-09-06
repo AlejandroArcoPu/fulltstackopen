@@ -26,6 +26,8 @@ app.use(express.json())
 
 app.use(morgan('tiny', { skip: () => process.env.NODE_ENV === 'test' }))
 
+app.use(middleware.tokenExtractor)
+
 app.use('/api/blogs', blogsRouter)
 app.use('/api/users', userRouter)
 app.use('/api/login', loginRouter)
