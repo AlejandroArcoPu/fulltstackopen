@@ -1,6 +1,7 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
 const User = require('../models/user')
+const jwt = require('jsonwebtoken')
 
 blogsRouter.get('/', async (request, response) => {
   const blogs = await Blog.find({}).populate('user','username name')
@@ -9,9 +10,13 @@ blogsRouter.get('/', async (request, response) => {
 
 blogsRouter.post('/', async (request, response) => {
   const body = request.body
-  const usersInDb = await User.find({})
-  const randomUser = Math.floor(Math.random() * usersInDb.length)
-  const user = usersInDb[randomUser]
+
+  const authorization = request.headers.authorization.replace('Bearer ','')
+
+  const decodedToken= jwt.verify(authorization,process.env.SECRET)
+
+  const user = await User.findById(decodedToken.id)
+
   const blog = new Blog({
     title: body.title,
     author: body.author,
