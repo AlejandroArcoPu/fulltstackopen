@@ -5,8 +5,10 @@ const bcrypt = require('bcrypt')
 
 loginRouter.post('/', async(request,response) => {
   const { username, password } = request.body
+
   const user = await User.findOne({ username })
-  const passwordValidation = user === null
+
+  const passwordValidation = !(user && password)
     ? false
     : await bcrypt.compare(password,user.passwordHash)
 
