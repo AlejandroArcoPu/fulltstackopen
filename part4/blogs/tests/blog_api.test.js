@@ -239,7 +239,31 @@ describe('when some blogs are saved', () => {
   })
 
   describe('update of a blog', () => {
-    test('a valid blog can be updated', async () => {
+    test('an authorized user can update a valid blog', async () => {
+      const newBlog =  {
+        title: 'Second class tests',
+        author: 'Bob C. Martin',
+        url: 'https://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll',
+        likes: 10,
+      }
+      const blogsStart = await helper.blogsInBd()
+      const blogToBeUpdated = blogsStart[3]
+
+      const user = await User.findById(blogToBeUpdated.user)
+      const token = helper.userToken(user)
+
+      await api
+        .put(`/api/blogs/${blogToBeUpdated.id}`)
+        .set('Authorization', `Bearer ${token}`)
+        .send(newBlog)
+        .expect(200)
+        .expect('Content-Type',/application\/json/)
+
+      const blogsEnd = await helper.blogsInBd()
+      assert(blogsEnd.some(b => b.title === newBlog.title))
+    })
+
+    test('an unauthorized user can not update a valid blog', async () => {
       const newBlog =  {
         title: 'Second class tests',
         author: 'Bob C. Martin',
@@ -252,48 +276,57 @@ describe('when some blogs are saved', () => {
       await api
         .put(`/api/blogs/${blogToBeUpdated.id}`)
         .send(newBlog)
-        .expect(200)
+        .expect(401)
         .expect('Content-Type',/application\/json/)
 
       const blogsEnd = await helper.blogsInBd()
-      assert(blogsEnd.some(b => b.title === newBlog.title))
+      assert(blogsEnd.some(b => b.title !== newBlog.title))
     })
 
-    //   test('a invalid blog id can not be updated', async () => {
-    //     const blogInvalid = {
-    //       title: 'Alejandros book',
-    //       id: '1234',
-    //       author: 'Alejandro Arco',
-    //       likes: 10,
-    //     }
-    //     await api
-    //       .put(`/api/blogs/${blogInvalid.id}`)
-    //       .expect(400)
+    test('an invalid blog id can not be updated', async () => {
+      const blogInvalid = {
+        title: 'Alejandros book',
+        id: '1234',
+        author: 'Alejandro Arco',
+        likes: 10,
+        user: '66dc7c80b813d0b83636af0e'
+      }
 
-    //     const blogsEnd = await helper.blogsInBd()
-    //     const blogsTitles = blogsEnd.map(b => b.title)
+      const user = await User.findById(blogInvalid.user)
+      const token = helper.userToken(user)
 
-    //     assert(blogsTitles.some(b => b.title !== blogInvalid.title))
-    //   })
+      await api
+        .put(`/api/blogs/${blogInvalid.id}`)
+        .set('Authorization', `Bearer ${token}`)
+        .expect(400)
 
-    //   test('a not found blog id is not updating anything', async () => {
-    //     const blogNotInBD = {
-    //       title: 'Alejandros book',
-    //       id: '1a234b567b89a676234d17fa',
-    //       author: 'Alejandro Arco',
-    //       likes: 10,
-    //     }
+      const blogsEnd = await helper.blogsInBd()
+      const blogsTitles = blogsEnd.map(b => b.title)
 
-    //     await api
-    //       .put(`/api/blogs/${blogNotInBD.id}`)
-    //       .expect(404)
+      assert(blogsTitles.some(b => b.title !== blogInvalid.title))
+    })
 
-    //     const blogsEnd = await helper.blogsInBd()
-    //     const blogTitles = blogsEnd.map(b => b.title)
+    test('a not found blog id is not updating anything', async () => {
+      const blogNotInBD = {
+        title: 'Alejandros book',
+        id: '1a234b567b89a676234d17fa',
+        author: 'Alejandro Arco',
+        likes: 10,
+        user: '66dc7c80b813d0b83636af0e'
+      }
+      const user = await User.findById(blogNotInBD.user)
+      const token = helper.userToken(user)
 
-    //     assert(blogTitles.some(b => blogNotInBD.title !== b.title))
+      await api
+        .put(`/api/blogs/${blogNotInBD.id}`)
+        .set('Authorization', `Bearer ${token}`)
+        .expect(404)
 
-  //   })
+      const blogsEnd = await helper.blogsInBd()
+      const blogTitles = blogsEnd.map(b => b.title)
+
+      assert(blogTitles.some(b => blogNotInBD.title !== b.title))
+    })
   })
 
   after(async () => {

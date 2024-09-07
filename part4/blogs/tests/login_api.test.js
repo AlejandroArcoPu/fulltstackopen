@@ -4,7 +4,6 @@ const helper = require('./test_helpers')
 const mongoose = require('mongoose')
 const app = require('../app')
 const User = require('../models/user')
-const bcrypt = require('bcrypt')
 const supertest = require('supertest')
 
 const api = supertest(app)
@@ -13,16 +12,8 @@ describe('when a user tries to login', () => {
 
   beforeEach(async() => {
     await User.deleteMany({})
-    const users = helper.initialUsers.map(async (user) =>
-      new User({
-        username: user.username,
-        name: user.name,
-        passwordHash: await bcrypt.hash(user.password,10)
-      }))
-
-    const usersWithPasswords= await Promise.all(users)
-    const usersSave = usersWithPasswords.map(user => user.save())
-
+    const users = helper.initialUsers.map(user => new User(user))
+    const usersSave = users.map(user => user.save())
     await Promise.all(usersSave)
   })
 
