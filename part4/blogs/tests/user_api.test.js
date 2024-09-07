@@ -59,7 +59,7 @@ describe('when some users are saved', () => {
     assert.strictEqual(usersAtStart.length + 1, usersAtEnd.length)
   })
 
-  test('an existing user is not created', async() => {
+  test('an new user with an existing username is not created', async() => {
     const usersAtStart = await helper.usersInBd()
 
     const repeatedUser = {
@@ -79,7 +79,7 @@ describe('when some users are saved', () => {
     assert.strictEqual(usersAtStart.length,usersAtEnd.length)
   })
 
-  test('a missing parameter in user body is not created', async() => {
+  test('if a parameter in user body is missing the user is not created', async() => {
     const usersAtStart = await helper.usersInBd()
 
     const invalidUsername = {
@@ -97,7 +97,7 @@ describe('when some users are saved', () => {
     assert.strictEqual(usersAtStart.length,usersAtEnd.length)
   })
 
-  test('an user with not a proper password length is not created', async() => {
+  test('an user with a short password length is not created', async() => {
     const usersAtStart = await helper.usersInBd()
 
     const newUser = {
