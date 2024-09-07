@@ -20,7 +20,9 @@ part2/
     courseinfo/
     phoneagenda/
 
-part3/ `=> This part is in other repo because of a recommendation in the course: https://github.com/AlejandroArcoPu/fullstackopen_part3`
+part3/
+
+This third part is in other repo because of a recommendation in the course: https://github.com/AlejandroArcoPu/fullstackopen_part3
 
 part4/
     blogs/
