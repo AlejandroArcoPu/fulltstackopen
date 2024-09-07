@@ -16,6 +16,14 @@ part1/
     unicafe/
     ...
 part2/
+    countrydata/
+    courseinfo/
+    phoneagenda/
+
+part3/ `=> This part is in other repo because of a recommendation in the course: https://github.com/AlejandroArcoPu/fullstackopen_part3`
+
+part4/
+    blogs/
 
 ```
 - If the exercise is one entire project creating an entire folder for it.
