@@ -42,22 +42,24 @@ blogsRouter.delete('/:id', middleware.userExtractor, async (request,response) =>
 
 })
 
-blogsRouter.put('/:id', async (request,response) => {
-  const body = request.body
+blogsRouter.put('/:id',  middleware.userExtractor, async (request,response) => {
+  const blog = await Blog.findById(request.params.id)
+  const userInToken = request.user
 
-  const blog = {
-    author: body.author,
-    title: body.title,
-    likes: body.likes,
-    url: body.url
-  }
-
-  const result = await Blog.findByIdAndUpdate(request.params.id,blog,{ new: true })
-  if(result){
+  if(userInToken.id.toString() === blog.user.toString()){
+    const body = request.body
+    const newBlog = {
+      author: body.author,
+      title: body.title,
+      likes: body.likes,
+      url: body.url
+    }
+    const result = await Blog.findByIdAndUpdate(request.params.id,newBlog,{ new: true })
     response.json(result)
   }else{
-    response.status(404).end()
+    response.status(401).end()
   }
+
 })
 
 module.exports = blogsRouter

@@ -43,7 +43,7 @@ describe('when a user tries to login', () => {
     assert(['token','username','name'].every(property => Object.hasOwn(result.body,property)))
   })
 
-  test('a user with a incorrect password can not generate a token', async() => {
+  test('a user with a wrong password can not generate a token', async() => {
     const users = await helper.usersInBd()
 
     const invalidUser = {
