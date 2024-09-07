@@ -10,7 +10,7 @@ blogsRouter.get('/', async (request, response) => {
 
 blogsRouter.post('/', async (request, response) => {
   const body = request.body
-  console.log(request.token)
+
   const decodedToken= jwt.verify(request.token,process.env.SECRET)
 
   const user = await User.findById(decodedToken.id)
@@ -30,12 +30,19 @@ blogsRouter.post('/', async (request, response) => {
 })
 
 blogsRouter.delete('/:id', async (request,response) => {
-  const result = await Blog.findByIdAndDelete(request.params.id)
-  if(result){
+  const blog = await Blog.findById(request.params.id)
+
+  const userIDInBlog = blog.user.toString()
+
+  const decodedToken = jwt.verify(request.token,process.env.SECRET)
+
+  if(decodedToken.id.toString() === userIDInBlog){
+    await Blog.deleteOne({ _id: blog.id })
     response.status(204).end()
-  } else {
-    response.status(404).end()
+  }else{
+    response.status(401).json({ error: 'only the creators can delete blogs' })
   }
+
 })
 
 blogsRouter.put('/:id', async (request,response) => {
