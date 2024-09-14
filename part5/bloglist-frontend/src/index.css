@@ -1,0 +1,17 @@
+.notification {
+    background-color: rgb(226, 219, 219);
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.error {
+    border: 2px solid red;
+    color: red;
+}
+
+.success {
+    border: 2px solid green;
+    color: green;
+}
