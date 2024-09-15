@@ -1,7 +1,37 @@
-const Blog = ({blog}) => (
+import { useState } from 'react'
+
+const Blog = ({blog}) => {
+    const [view, setView] = useState(false)
+
+    const handleView = () => {
+      setView(!view)
+    }
+
+    const showWhenView = { display: view ? '' : 'none' }
+    const hiddenWhenView = { display: view ? 'none' : '' }
+
+    const blogStyle = {
+      paddingTop: 10,
+      paddingLeft: 2,
+      border: 'solid',
+      borderWidth: 1,
+      marginBottom: 5,
+    }
+
+
+    return(
     <div>
-      {blog.title} {blog.author}
-    </div>  
-)
+      <div style={{...blogStyle,...hiddenWhenView}}>
+        {blog.title} {blog.author} <button onClick={handleView}>view</button>
+      </div>
+      <div style={{...blogStyle,...showWhenView}}>
+        <div>{blog.title} <button onClick={handleView}>hide</button></div>
+        <div>{blog.url}</div>
+        <div>likes {blog.likes}<button>likes</button></div>
+        <div>{blog.author}</div>
+      </div>
+    </div>
+    ) 
+}
 
 export default Blog
