@@ -4,7 +4,6 @@ const Blog = ({blog,updateBlog}) => {
     const [view, setView] = useState(false)
 
     const handleView = () => {
-      console.log(blog)
       setView(!view)
     }
 

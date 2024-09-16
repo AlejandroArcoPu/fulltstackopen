@@ -108,7 +108,7 @@ function App() {
       initialLikes++
       const newBlog = {...blogToUpdate, likes: initialLikes}
       const result = await blogsService.update(blogId,newBlog)
-      setBlogs(blogs.map(blog => blog.id === result.id ? result : blog))
+      setBlogs(blogs.map(blog => blog.id === result.id ? newBlog : blog))
     } catch (error) {
       console.log(error)
       setType('error')
