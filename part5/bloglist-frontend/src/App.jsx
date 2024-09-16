@@ -45,6 +45,7 @@ function App() {
         'loggedUserBlog', JSON.stringify(user)
       )
       setUser(user)
+      blogsService.setToken(user.token)
       setUsername('')
       setPassword('')
     } catch (error) {
@@ -99,6 +100,25 @@ function App() {
       }, 5000)
     }
   }
+
+  const increaseBlogLike = async (blogId) => {
+    try{
+      const blogToUpdate = blogs.find(blog => blog.id === blogId)
+      let initialLikes = blogToUpdate.likes
+      initialLikes++
+      const newBlog = {...blogToUpdate, likes: initialLikes}
+      const result = await blogsService.update(blogId,newBlog)
+      setBlogs(blogs.map(blog => blog.id === result.id ? result : blog))
+    } catch (error) {
+      console.log(error)
+      setType('error')
+      setMessage('something is wrong with the update', error)
+      setTimeout(() => {
+        setMessage(null)
+        setType(null)
+      }, 5000)
+    }
+  }
   
   return (
     <div>
@@ -125,7 +145,7 @@ function App() {
           </Toggable>
 
           {blogs.map(blog => 
-            <Blog key={blog.id} blog={blog}/>
+            <Blog key={blog.id} blog={blog} updateBlog={ () => increaseBlogLike(blog.id)}/>
           )}
         </>
       )}

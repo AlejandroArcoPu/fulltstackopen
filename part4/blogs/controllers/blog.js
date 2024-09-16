@@ -11,7 +11,6 @@ blogsRouter.post('/', middleware.userExtractor, async (request, response) => {
   const body = request.body
 
   const userInToken = request.user
-
   const blog = new Blog({
     title: body.title,
     author: body.author,
@@ -45,7 +44,7 @@ blogsRouter.delete('/:id', middleware.userExtractor, async (request,response) =>
 blogsRouter.put('/:id',  middleware.userExtractor, async (request,response) => {
   const blog = await Blog.findById(request.params.id)
   const userInToken = request.user
-
+  console.log(userInToken)
   if(userInToken.id.toString() === blog.user.toString()){
     const body = request.body
     const newBlog = {
