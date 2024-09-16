@@ -23,7 +23,6 @@ const create = async (blog) => {
 }
 
 const update = async (blogId,blog) => {
-    console.log(token)
     const config = {
         headers: {
             'Authorization': token

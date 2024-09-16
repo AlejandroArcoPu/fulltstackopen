@@ -4,6 +4,7 @@ const Blog = ({blog,updateBlog}) => {
     const [view, setView] = useState(false)
 
     const handleView = () => {
+      console.log(blog)
       setView(!view)
     }
 
@@ -24,10 +25,10 @@ const Blog = ({blog,updateBlog}) => {
         {blog.title} {blog.author} <button onClick={handleView}>view</button>
       </div>
       <div style={{...blogStyle,...showWhenView}}>
-        <div>{blog.title} <button onClick={handleView}>hide</button></div>
+        <div>{blog.title} {blog.author}<button onClick={handleView}>hide</button></div>
         <div>{blog.url}</div>
         <div>likes {blog.likes}<button onClick={updateBlog}>likes</button></div>
-        <div>{blog.author}</div>
+        <div>{blog.user.name}</div>
       </div>
     </div>
     ) 

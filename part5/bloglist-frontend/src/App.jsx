@@ -133,7 +133,7 @@ function App() {
       ) : (
         <>
           <h1>blogs</h1>
-          <p>{user.username} logged in 
+          <p>{user.name} logged in 
             <button onClick={handleLogOut}>
               logout
             </button>
