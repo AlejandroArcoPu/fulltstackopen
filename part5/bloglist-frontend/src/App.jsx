@@ -77,11 +77,16 @@ function App() {
   const addNewBlog = async ({title,author,url}) => {
     try {
       blogFormRef.current.toggleVisibility()
-      const response = await blogsService.create({title,author,url})
-      setBlogs(blogs.concat(response))
+      const newBlog = {
+        title,
+        author,
+        url
+      }
+      const result = await blogsService.create(newBlog)
+      setBlogs(blogs.concat(result))
       setType('success')
       setMessage(
-        `a new blog ${response.title} by ${response.author} added`
+        `a new blog ${result.title} by ${result.author} added`
       )
       setTimeout(() => {
         setMessage(null)
@@ -108,7 +113,7 @@ function App() {
       initialLikes++
       const newBlog = {...blogToUpdate, likes: initialLikes}
       const result = await blogsService.update(blogId,newBlog)
-      setBlogs(blogs.map(blog => blog.id === result.id ? newBlog : blog))
+      setBlogs(blogs.map(blog => blog.id === result.id ? result : blog))
     } catch (error) {
       console.log(error)
       setType('error')
