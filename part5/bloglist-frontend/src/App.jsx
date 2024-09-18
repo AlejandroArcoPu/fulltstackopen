@@ -6,6 +6,7 @@ import blogsService from './services/blogs'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import Toggable from './components/Toggable'
+import notifications from './utils/notifications'
 
 function App() {
 
@@ -50,27 +51,23 @@ function App() {
       setPassword('')
     } catch (error) {
       console.log(error)
-      setType('error')
-      setMessage(
-        `wrong username or password`
+      notifications.notifyWithTimeout(
+        setType,
+        setMessage,
+        'error',
+        'wrong username or password'
       )
-      setTimeout(() => {
-        setMessage(null)
-        setType(null)
-      }, 5000)
     }
   }
 
   const handleLogOut = () => {
     window.localStorage.removeItem('loggedUserBlog')
-    setType('success')
-    setMessage(
-      `bye, come back soon :)`
+    notifications.notifyWithTimeout(
+      setType,
+      setMessage,
+      'success',
+      'bye, come back soon :)',
     )
-    setTimeout(() => {
-      setMessage(null)
-      setType(null)
-    }, 5000)
     setUser(null)
   }
 
@@ -89,25 +86,20 @@ function App() {
       }
       const result = await blogsService.create(newBlog)
       setBlogs(blogs.concat(result))
-      setType('success')
-      setMessage(
+      notifications.notifyWithTimeout(
+        setType,
+        setMessage,
+        'success',
         `a new blog ${result.title} by ${result.author} added`
       )
-      setTimeout(() => {
-        setMessage(null)
-        setType(null)
-      }, 5000)
-      
     } catch (error) {
       console.log(error)
-      setType('error')
-      setMessage(
+      notifications.notifyWithTimeout(
+        setType,
+        setMessage,
+        'error',
         `something is wrong with your blog ${error}`
       )
-      setTimeout(() => {
-        setMessage(null)
-        setType(null)
-      }, 5000)
     }
   }
 
@@ -121,15 +113,38 @@ function App() {
       setBlogs(blogs.map(blog => blog.id === result.id ? result : blog))
     } catch (error) {
       console.log(error)
-      setType('error')
-      setMessage('something is wrong with the update', error)
-      setTimeout(() => {
-        setMessage(null)
-        setType(null)
-      }, 5000)
+      notifications.notifyWithTimeout(
+        setType,
+        setMessage,
+        'error',
+        'something is wrong with the update'
+      )
     }
   }
   
+  const removeBlog = async (blogId, blogTitle, blogAuthor) => {
+    try{
+      if(window.confirm(`Remove blog ${blogTitle} by ${blogAuthor}`)){
+        await blogsService.remove(blogId)
+        setBlogs(blogs.filter(blog => blog.id !== blogId))
+        notifications.notifyWithTimeout(
+          setType,
+          setMessage,
+          'success',
+          `the blog ${blogTitle} by ${blogAuthor} removed`
+        )
+      }
+    }catch (error) {
+      console.log(error)
+      notifications.notifyWithTimeout(
+        setType,
+        setMessage,
+        'error',
+        `something is happening with the removal ${error}`
+      )
+    }
+  }
+
   return (
     <div>
       <Notification message={message} type={type}/>
@@ -157,7 +172,7 @@ function App() {
           <button onClick={handleSort}>sort by likes</button>
 
           {blogs.map(blog => 
-            <Blog key={blog.id} blog={blog} updateBlog={ () => increaseBlogLike(blog.id)}/>
+            <Blog key={blog.id} blog={blog} updateBlog={ () => increaseBlogLike(blog.id)} removeBlog={() => removeBlog(blog.id,blog.title,blog.author)} user={user} />
           )}
         </>
       )}
