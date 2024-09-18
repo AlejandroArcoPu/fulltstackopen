@@ -116,7 +116,7 @@ function App() {
       )
     }
   }
-  
+
   const removeBlog = async (blogId, blogTitle, blogAuthor) => {
     try{
       if(window.confirm(`Remove blog ${blogTitle} by ${blogAuthor}`)){
@@ -143,26 +143,27 @@ function App() {
   return (
     <div>
       <Notification message={message} type={type}/>
-      { user === null ? ( 
-        <LoginForm 
-        handleSubmit={handleSubmit} />
+      { user === null ? (
+        <LoginForm
+        handleSubmit={handleSubmit}
+        />
       ) : (
         <>
           <h1>blogs</h1>
-          <p>{user.name} logged in 
+          <p>{user.name} logged in
             <button onClick={handleLogOut}>
               logout
             </button>
           </p>
           <Toggable label='create new blog' ref={blogFormRef}>
-            <BlogForm 
+            <BlogForm
             createNewBlog={addNewBlog}
             />
           </Toggable>
 
           <button onClick={handleSort}>sort by likes</button>
 
-          {blogs.map(blog => 
+          {blogs.map(blog =>
             <Blog key={blog.id} blog={blog} updateBlog={ () => increaseBlogLike(blog.id)} removeBlog={() => removeBlog(blog.id,blog.title,blog.author)} user={user} />
           )}
         </>

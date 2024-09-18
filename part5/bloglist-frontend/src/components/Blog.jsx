@@ -33,7 +33,7 @@ const Blog = ({blog,updateBlog,user,removeBlog}) => {
         </div>
       </div>
     </div>
-    ) 
+    )
 }
 
 export default Blog

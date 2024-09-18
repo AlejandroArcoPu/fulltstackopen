@@ -5,7 +5,7 @@ import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
 
 export default [
-  { ignores: ['dist'] },
+  { ignores: ['node_modules, dist, eslint.config.js, vite.config.js'] },
   {
     files: ['**/*.{js,jsx}'],
     languageOptions: {
@@ -28,8 +28,23 @@ export default [
       ...react.configs.recommended.rules,
       ...react.configs['jsx-runtime'].rules,
       ...reactHooks.configs.recommended.rules,
-      "react/prop-types": 0,
+      'react/prop-types': 0,
       'react/jsx-no-target-blank': 'off',
+      'react/jsx-filename-extension': [2, { 'extensions': ['.js', '.jsx'] }],
+      'react/jsx-pascal-case': [2],
+      'react/no-multi-comp':  [2, { 'ignoreStateless': true }],
+      'react/jsx-closing-bracket-location': [2, 'tag-aligned'],
+      'react/jsx-closing-tag-location': [2, 'tag-aligned'],
+      'quotes': [
+        'error',
+        'single'
+      ],
+      'linebreak-style': [
+        'error',
+        'unix'
+      ],
+      'eqeqeq': 'error',
+      'no-trailing-spaces': 'error',
       'react-refresh/only-export-components': [
         'warn',
         { allowConstantExport: true },
