@@ -10,8 +10,6 @@ import notifications from './utils/notifications'
 
 function App() {
 
-  const [username,setUsername] = useState('')
-  const [password,setPassword] = useState('')
   const [user,setUser] = useState(null)
   const [blogs, setBlogs] = useState([])
   const [message,setMessage] = useState(null)
@@ -35,8 +33,7 @@ function App() {
     }
   }, [])
 
-  const handleLogin = async (event) => {
-    event.preventDefault()
+  const handleSubmit = async ({username,password}) => {
     try{
       const user = await loginService.login({
         username,
@@ -47,8 +44,6 @@ function App() {
       )
       setUser(user)
       blogsService.setToken(user.token)
-      setUsername('')
-      setPassword('')
     } catch (error) {
       console.log(error)
       notifications.notifyWithTimeout(
@@ -150,11 +145,7 @@ function App() {
       <Notification message={message} type={type}/>
       { user === null ? ( 
         <LoginForm 
-        username={username} 
-        password={password} 
-        handleLogin={handleLogin} 
-        handleUsername={({ target }) => setUsername(target.value)} 
-        handlePassword={({ target }) => setPassword(target.value)}/>
+        handleSubmit={handleSubmit} />
       ) : (
         <>
           <h1>blogs</h1>
