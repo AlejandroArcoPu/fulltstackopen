@@ -20,10 +20,10 @@ const Blog = ({blog,updateBlog,user,removeBlog}) => {
 
     return(
     <div>
-      <div style={{...blogStyle,...hiddenWhenView}}>
+      <div style={{...blogStyle,...hiddenWhenView}} className='defaultBlog'>
         {blog.title} {blog.author} <button onClick={handleView}>view</button>
       </div>
-      <div style={{...blogStyle,...showWhenView}}>
+      <div style={{...blogStyle,...showWhenView}} className='clickBlog'>
         <div>{blog.title} {blog.author}<button onClick={handleView}>hide</button></div>
         <div>{blog.url}</div>
         <div>likes {blog.likes}<button onClick={updateBlog}>likes</button></div>
