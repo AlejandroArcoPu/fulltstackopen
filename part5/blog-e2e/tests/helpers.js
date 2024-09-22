@@ -10,6 +10,8 @@ const createBlog = async (page,title,author,url) => {
     await page.getByPlaceholder('author').fill(author)
     await page.getByPlaceholder('url').fill(url)
     await page.getByRole('button', { name: 'create' }).click()
+    const text = `${title} ${author} view`
+    await page.getByText(text).waitFor()
 }
 
 module.exports = { loginWith, createBlog }

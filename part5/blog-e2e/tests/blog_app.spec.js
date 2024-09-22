@@ -47,6 +47,25 @@ describe('Blog app', () => {
             await createBlog(page,'my first blog','Playwright','https://playwright.dev/')
             await expect(page.getByText('my first blog by Playwright')).toBeVisible()
         })
+
+        describe('With some blogs created', () => {
+            beforeEach(async ({page}) => {
+                await createBlog(page,'my first blog','Playwright','https://playwright.dev/')
+                await createBlog(page,'my second blog','Playwright','https://playwright.dev/')
+                await createBlog(page,'my third blog','Playwright','https://playwright.dev/')
+            })
+
+            test('a blog can be updated', async ({page}) => {
+                await page.getByText('my second blog').locator('..').getByRole('button', {name: 'view'}).click()
+                await page.getByRole('button',{ name: 'likes', exact: true }).click()
+                await expect(page.getByText('likes 1')).toBeVisible()
+            })
+
+            test('a creator can delete a blog', async ({page}) => {
+
+            })
+        })
     })
+
 
 })
