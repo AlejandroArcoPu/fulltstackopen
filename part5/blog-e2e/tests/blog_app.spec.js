@@ -10,4 +10,9 @@ describe('Blog app', () => {
         await expect(page.getByTestId('username')).toBeVisible()
         await expect(page.getByTestId('password')).toBeVisible()
     })
+
+    describe('Login', () => {
+        test()
+    })
+
 })
