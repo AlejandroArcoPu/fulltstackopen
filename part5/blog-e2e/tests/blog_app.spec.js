@@ -11,6 +11,13 @@ describe('Blog app', () => {
             password: 'mysecret'
         }
       })
+      await request.post('/api/users', {
+        data: {
+            username: 'belenagui',
+            name: 'Belen',
+            password: 'mysecret'
+        }
+      })
       await page.goto('/')
     })
   
@@ -73,6 +80,24 @@ describe('Blog app', () => {
                 await page.waitForTimeout(500); 
                 await expect(page.getByText('my second blog')).not.toBeVisible()
             })
+
+        })
+
+       
+    })
+    describe('When logged in with some users', () => {
+        beforeEach(async ({page}) => {
+            await loginWith(page,'alejandroarpu','mysecret')
+            await createBlog(page,'my first blog','Playwright','https://playwright.dev/')
+            await createBlog(page,'my second blog','Playwright','https://playwright.dev/')
+            await page.getByRole('button', { name: 'logout' }).click()
+            await loginWith(page,'belenagui','mysecret')
+            await createBlog(page,'my third blog','Playwright','https://playwright.dev/')
+        })
+        
+        test('only creators can see remove button', async ({page}) => {
+            await page.getByText('my first blog').locator('..').getByRole('button', { name: 'view'} ).click()
+            await expect(page.getByRole('button', { name: 'remove' })).not.toBeVisible()
         })
     })
 
