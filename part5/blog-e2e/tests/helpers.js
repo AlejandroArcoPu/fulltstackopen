@@ -1,3 +1,5 @@
+const { expect } = require('@playwright/test');
+
 const loginWith = async (page, username, password) => {
     await page.getByTestId('username').fill(username)
     await page.getByTestId('password').fill(password)
@@ -10,8 +12,7 @@ const createBlog = async (page,title,author,url) => {
     await page.getByPlaceholder('author').fill(author)
     await page.getByPlaceholder('url').fill(url)
     await page.getByRole('button', { name: 'create' }).click()
-    const text = `${title} ${author} view`
-    await page.getByText(text).waitFor()
+    await page.getByText(`${title} ${author} view`).waitFor()
 }
 
 module.exports = { loginWith, createBlog }

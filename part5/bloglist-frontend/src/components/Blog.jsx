@@ -19,7 +19,7 @@ const Blog = ({blog,updateBlog,user,removeBlog}) => {
     }
 
     return(
-    <div>
+    <div className='blog'>
       <div style={{...blogStyle,...hiddenWhenView}} className='defaultBlog'>
         {blog.title} {blog.author} <button onClick={handleView}>view</button>
       </div>

@@ -1,5 +1,5 @@
 const { test, expect,beforeEach, describe } = require('@playwright/test');
-const { loginWith,createBlog } = require('./helpers')
+const { loginWith,createBlog, increaseLike } = require('./helpers')
 
 describe('Blog app', () => {
     beforeEach(async ({ page, request }) => {
@@ -77,9 +77,32 @@ describe('Blog app', () => {
                 })
 
                 await page.getByRole('button', { name: 'remove' }).click()
-                await page.waitForTimeout(500); 
-                await expect(page.getByText('my second blog')).not.toBeVisible()
+                
+                await expect(page.getByText('my second blog Playwrighthide')).not.toBeVisible()
+                await expect(page.getByText('the blog my second blog by Playwright removed')).toBeVisible()
             })
+
+            test('blogs are ordered based on likes', async ({page}) => {
+                const blogs = ['my first blog','my second blog','my third blog']
+                
+                for(let blog of blogs){
+                    await page.getByText(blog).locator('..').getByRole('button', {name: 'view'}).click()
+                }
+
+                await page.getByText(blogs[0]).locator('..').getByRole('button', { name: 'likes' }).click();
+                await expect(page.getByText(blogs[0]).locator('..').getByText('likes 1')).toBeVisible()
+                await page.getByText(blogs[1]).locator('..').getByRole('button', { name: 'likes' }).click();
+                await expect(page.getByText(blogs[1]).locator('..').getByText('likes 1')).toBeVisible()
+                await page.getByText(blogs[1]).locator('..').getByRole('button', { name: 'likes' }).click();
+                await expect(page.getByText(blogs[1]).locator('..').getByText('likes 2')).toBeVisible()
+
+                await page.getByRole('button',{ name: 'sort by likes' }).click()
+
+                await expect(page.locator('div.blog').nth(0).getByText('likes 2')).toBeVisible()
+                await expect(page.locator('div.blog').nth(1).getByText('likes 1')).toBeVisible()
+                await expect(page.locator('div.blog').nth(2).getByText('likes 0')).toBeVisible()
+
+            }) 
 
         })
 
