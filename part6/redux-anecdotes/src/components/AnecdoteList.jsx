@@ -10,8 +10,8 @@ const AnecdoteList = () => {
     const anecdotes = useSelector(createSelector(
         [selectAnecdotes, selectFilter],
         (anecdotes,filter) => {
-            if(filter === '') return anecdotes.slice().sort(byVotes)
-            return anecdotes.slice().sort(byVotes)
+            if(filter === '') return [...anecdotes].sort(byVotes)
+            return [...anecdotes].sort(byVotes)
                     .filter(a => 
                         a.content
                         .toLowerCase()
