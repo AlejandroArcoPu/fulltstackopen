@@ -1,20 +1,27 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { voteAnecdote } from '../reducers/anecdoteReducer'
+import { createSelector } from '@reduxjs/toolkit'
 
 const AnecdoteList = () => {
     const byVotes = (a,b) => b.votes - a.votes
-    const anecdotes = useSelector(({filter,anecdotes}) => {
-        if(filter === '') return anecdotes.sort(byVotes)
-        return anecdotes
-        .sort(byVotes)
-        .filter(anecdotes => 
-            anecdotes.content.toLowerCase().includes(filter.toLowerCase()))
-    })
+    // memoize
+    const selectAnecdotes  = state => state.anecdotes
+    const selectFilter = state => state.filter
+    const anecdotes = useSelector(createSelector(
+        [selectAnecdotes, selectFilter],
+        (anecdotes,filter) => {
+            if(filter === '') return anecdotes.slice().sort(byVotes)
+            return anecdotes.slice().sort(byVotes)
+                    .filter(a => 
+                        a.content
+                        .toLowerCase()
+                        .includes(filter.toLowerCase()
+            ))
+        }
+    ))
+
     const dispatch = useDispatch()
 
-    const vote = (id) => {
-        dispatch(voteAnecdote(id))
-    }
     return (
         <div>
             {anecdotes.map(anecdote =>
@@ -24,7 +31,7 @@ const AnecdoteList = () => {
                 </div>
                 <div>
                     has {anecdote.votes}
-                    <button onClick={() => vote(anecdote.id)}>vote</button>
+                    <button onClick={() => dispatch(voteAnecdote(anecdote.id))}>vote</button>
                 </div>
                 </div>
             )}
