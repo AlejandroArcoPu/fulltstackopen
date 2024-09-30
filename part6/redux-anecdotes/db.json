@@ -38,7 +38,12 @@
     {
       "id": "efa6",
       "content": "hola señores",
-      "votes": 0
+      "votes": 6
+    },
+    {
+      "id": "d4bc",
+      "content": "New note test",
+      "votes": 7
     }
   ]
 }
