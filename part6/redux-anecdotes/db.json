@@ -43,7 +43,12 @@
     {
       "id": "d4bc",
       "content": "New note test",
-      "votes": 7
+      "votes": 10
+    },
+    {
+      "id": "42dd",
+      "content": "New note to test",
+      "votes": 3
     }
   ]
 }
