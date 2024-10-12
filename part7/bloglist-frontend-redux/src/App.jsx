@@ -3,9 +3,9 @@ import LoginForm from './components/LoginForm'
 import loginService from './services/login'
 import blogsService from './services/blogs'
 import Notification from './components/Notification'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { setNotification } from './reducers/notificationReducer'
-import { initializeBlogs, setBlogs, updateBlog } from './reducers/blogReducer'
+import { initializeBlogs } from './reducers/blogReducer'
 import BlogList from './components/BlogList'
 
 function App() {

@@ -5,12 +5,7 @@ import { setNotification } from '../reducers/notificationReducer'
 
 const Blog = ({ blog, user }) => {
     const dispatch = useDispatch()
-
     const [view, setView] = useState(false)
-
-    const handleView = () => {
-        setView(!view)
-    }
 
     const increaseBlogLike = () => {
         try {
@@ -67,7 +62,7 @@ const Blog = ({ blog, user }) => {
                 className="defaultBlog"
             >
                 {blog.title} {blog.author}{' '}
-                <button onClick={handleView}>view</button>
+                <button onClick={() => setView(!view)}>view</button>
             </div>
             <div
                 style={{ ...blogStyle, ...showWhenView }}
@@ -75,7 +70,7 @@ const Blog = ({ blog, user }) => {
             >
                 <div>
                     {blog.title} {blog.author}
-                    <button onClick={handleView}>hide</button>
+                    <button onClick={() => setView(!view)}>hide</button>
                 </div>
                 <div>{blog.url}</div>
                 <div>
