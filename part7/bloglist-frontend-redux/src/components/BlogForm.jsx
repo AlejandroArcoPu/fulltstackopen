@@ -1,65 +1,56 @@
-import { useState } from "react";
-import PropTypes from "prop-types";
+import { useDispatch } from 'react-redux'
+import { setNotification } from '../reducers/notificationReducer'
+import { asObject, createBlog } from '../reducers/blogReducer'
 
-const BlogForm = ({ createNewBlog }) => {
-  const [author, setAuthor] = useState("");
-  const [title, setTitle] = useState("");
-  const [url, setUrl] = useState("");
+const BlogForm = ({ blogFormRef }) => {
+    const dispatch = useDispatch()
 
-  const addBlog = (event) => {
-    event.preventDefault();
-    createNewBlog({
-      title,
-      author,
-      url,
-    });
-    setTitle("");
-    setAuthor("");
-    setUrl("");
-  };
+    const addBlog = async (event) => {
+        const title = event.target.title.value
+        const author = event.target.author.value
+        const url = event.target.url.value
 
-  return (
-    <div>
-      <h1>create new</h1>
-      <form onSubmit={addBlog}>
+        event.preventDefault()
+        try {
+            blogFormRef.current.toggleVisibility()
+            dispatch(createBlog(asObject(title, author, url)))
+            dispatch(
+                setNotification({
+                    type: 'success',
+                    notification: `a new blog ${title} by ${author} added`,
+                })
+            )
+        } catch (error) {
+            console.log(error)
+            dispatch(
+                setNotification({
+                    type: 'error',
+                    notification: `something is wrong with your blog ${error}`,
+                })
+            )
+        }
+    }
+
+    return (
         <div>
-          title:
-          <input
-            name="title"
-            type="text"
-            value={title}
-            onChange={({ target }) => setTitle(target.value)}
-            placeholder="title"
-          />
+            <h1>create new</h1>
+            <form onSubmit={addBlog}>
+                <div>
+                    title:
+                    <input name="title" type="text" placeholder="title" />
+                </div>
+                <div>
+                    author:
+                    <input name="author" type="text" placeholder="author" />
+                </div>
+                <div>
+                    url:
+                    <input name="url" type="text" placeholder="url" />
+                </div>
+                <button type="submit">create</button>
+            </form>
         </div>
-        <div>
-          author:
-          <input
-            name="author"
-            type="text"
-            value={author}
-            onChange={({ target }) => setAuthor(target.value)}
-            placeholder="author"
-          />
-        </div>
-        <div>
-          url:
-          <input
-            name="url"
-            type="text"
-            value={url}
-            onChange={({ target }) => setUrl(target.value)}
-            placeholder="url"
-          />
-        </div>
-        <button type="submit">create</button>
-      </form>
-    </div>
-  );
-};
+    )
+}
 
-BlogForm.propTypes = {
-  createNewBlog: PropTypes.func.isRequired,
-};
-
-export default BlogForm;
+export default BlogForm

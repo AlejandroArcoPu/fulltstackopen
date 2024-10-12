@@ -1,27 +1,22 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import LoginForm from './components/LoginForm'
-import Blog from './components/Blog'
 import loginService from './services/login'
 import blogsService from './services/blogs'
-import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
-import Toggable from './components/Toggable'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { setNotification } from './reducers/notificationReducer'
+import { initializeBlogs, setBlogs } from './reducers/blogReducer'
+import BlogList from './components/BlogList'
 
 function App() {
     const [user, setUser] = useState(null)
-    const [blogs, setBlogs] = useState([])
-    const blogFormRef = useRef()
     const dispatch = useDispatch()
 
     useEffect(() => {
-        const fetchBlogs = async () => {
-            const data = await blogsService.getAll()
-            setBlogs(data)
-        }
-        fetchBlogs()
+        dispatch(initializeBlogs())
     }, [])
+
+    const blogs = useSelector((state) => state.blogs)
 
     useEffect(() => {
         const loggedUser = window.localStorage.getItem('loggedUserBlog')
@@ -61,38 +56,6 @@ function App() {
             })
         )
         setUser(null)
-    }
-
-    const handleSort = () => {
-        const sortedBlogs = [...blogs].sort((bA, bB) => bB.likes - bA.likes)
-        setBlogs(sortedBlogs)
-    }
-
-    const addNewBlog = async ({ title, author, url }) => {
-        try {
-            blogFormRef.current.toggleVisibility()
-            const newBlog = {
-                title,
-                author,
-                url,
-            }
-            const result = await blogsService.create(newBlog)
-            setBlogs(blogs.concat(result))
-            dispatch(
-                setNotification({
-                    type: 'success',
-                    notification: `a new blog ${result.title} by ${result.author} added`,
-                })
-            )
-        } catch (error) {
-            console.log(error)
-            dispatch(
-                setNotification({
-                    type: 'error',
-                    notification: `something is wrong with your blog ${error}`,
-                })
-            )
-        }
     }
 
     const increaseBlogLike = async (blogId) => {
@@ -145,30 +108,12 @@ function App() {
             {user === null ? (
                 <LoginForm handleSubmit={handleSubmit} />
             ) : (
-                <>
-                    <h1>blogs</h1>
-                    <p>
-                        {user.name} logged in
-                        <button onClick={handleLogOut}>logout</button>
-                    </p>
-                    <Toggable label="create new blog" ref={blogFormRef}>
-                        <BlogForm createNewBlog={addNewBlog} />
-                    </Toggable>
-
-                    <button onClick={handleSort}>sort by likes</button>
-
-                    {blogs.map((blog) => (
-                        <Blog
-                            key={blog.id}
-                            blog={blog}
-                            updateBlog={() => increaseBlogLike(blog.id)}
-                            removeBlog={() =>
-                                removeBlog(blog.id, blog.title, blog.author)
-                            }
-                            user={user}
-                        />
-                    ))}
-                </>
+                <BlogList
+                    user={user}
+                    handleLogOut={handleLogOut}
+                    increaseBlogLike={increaseBlogLike}
+                    removeBlog={removeBlog}
+                />
             )}
         </div>
     )
