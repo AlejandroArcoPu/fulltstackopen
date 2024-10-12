@@ -16,8 +16,6 @@ function App() {
         dispatch(initializeBlogs())
     }, [])
 
-    const blogs = useSelector((state) => state.blogs)
-
     useEffect(() => {
         const loggedUser = window.localStorage.getItem('loggedUserBlog')
         if (loggedUser) {

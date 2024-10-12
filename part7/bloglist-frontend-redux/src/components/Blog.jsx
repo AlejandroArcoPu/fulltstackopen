@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { updateBlog } from '../reducers/blogReducer'
+import { updateBlog, deleteBlog } from '../reducers/blogReducer'
 import { setNotification } from '../reducers/notificationReducer'
 
 const Blog = ({ blog, user }) => {
     const dispatch = useDispatch()
+
     const [view, setView] = useState(false)
 
     const handleView = () => {
@@ -26,15 +27,14 @@ const Blog = ({ blog, user }) => {
         }
     }
 
-    const removeBlog = async (blog) => {
+    const removeBlog = async () => {
         try {
-            if (window.confirm(`Remove blog ${blogTitle} by ${blogAuthor}`)) {
-                await blogsService.remove(blogId)
-                setBlogs(blogs.filter((blog) => blog.id !== blogId))
+            if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+                dispatch(deleteBlog(blog.id))
                 dispatch(
                     setNotification({
                         type: 'success',
-                        notification: `the blog ${blogTitle} by ${blogAuthor} removed`,
+                        notification: `the blog ${blog.title} by ${blog.author} removed`,
                     })
                 )
             }
