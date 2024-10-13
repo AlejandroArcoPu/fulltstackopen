@@ -73,7 +73,7 @@ const Blog = ({ blog, user }) => {
                     <button onClick={() => setView(!view)}>hide</button>
                 </div>
                 <div>{blog.url}</div>
-                <div>
+                <div className="likes">
                     likes {blog.likes}
                     <button onClick={increaseBlogLike}>likes</button>
                 </div>

@@ -1,7 +1,7 @@
-import { render, screen } from '@testing-library/react'
+import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-
 import Blog from './Blog'
+import { renderWithProviders } from '../utils/test-utils.jsx'
 
 describe('<Blog />', () => {
     const user = {
@@ -17,7 +17,9 @@ describe('<Blog />', () => {
     }
 
     test('renders blog show title an author for default', async () => {
-        const container = render(<Blog blog={blog} user={user} />).container
+        const container = renderWithProviders(
+            <Blog blog={blog} user={user} />
+        ).container
         const elementDefault = container.querySelector('.defaultBlog')
         const elementClick = container.querySelector('.clickBlog')
 
@@ -26,7 +28,9 @@ describe('<Blog />', () => {
     })
 
     test('url and author show when click on button', async () => {
-        const container = render(<Blog blog={blog} user={user} />).container
+        const container = renderWithProviders(
+            <Blog blog={blog} user={user} />
+        ).container
         const userMock = userEvent.setup()
         const button = screen.getByText('view')
         await userMock.click(button)
@@ -39,15 +43,16 @@ describe('<Blog />', () => {
     })
 
     test('clicking the likes button twice calls event handler twice', async () => {
-        const mockUpdate = vi.fn()
-
-        render(<Blog blog={blog} user={user} updateBlog={mockUpdate} />)
+        const container = renderWithProviders(
+            <Blog blog={blog} user={user} />
+        ).container
 
         const userMock = userEvent.setup()
         const button = screen.getByText('likes')
         await userMock.click(button)
         await userMock.click(button)
 
-        expect(mockUpdate.mock.calls).toHaveLength(2)
+        const elementLikes = container.querySelector('.likes')
+        expect(elementLikes).toHaveTextContent('1')
     })
 })

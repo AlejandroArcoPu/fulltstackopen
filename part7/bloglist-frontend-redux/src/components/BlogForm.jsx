@@ -6,11 +6,11 @@ const BlogForm = ({ blogFormRef }) => {
     const dispatch = useDispatch()
 
     const addBlog = async (event) => {
-        const title = event.target.title.value
-        const author = event.target.author.value
-        const url = event.target.url.value
-
         event.preventDefault()
+        const title = event.target.elements.title.value
+        const author = event.target.elements.author.value
+        const url = event.target.elements.url.value
+
         try {
             blogFormRef.current.toggleVisibility()
             dispatch(createBlog(asObject(title, author, url)))
@@ -20,6 +20,9 @@ const BlogForm = ({ blogFormRef }) => {
                     notification: `a new blog ${title} by ${author} added`,
                 })
             )
+            event.target.title.value = ''
+            event.target.author.value = ''
+            event.target.url.value = ''
         } catch (error) {
             console.log(error)
             dispatch(
