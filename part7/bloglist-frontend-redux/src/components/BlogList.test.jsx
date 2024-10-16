@@ -59,9 +59,14 @@ describe('<BlogList/>', () => {
     test('should order blogs by likes', async () => {
         const userMock = userEvent.setup()
         const buttonSort = screen.getByText('sort by likes')
-        await userMock.click(buttonSort)
-        screen.debug()
-    })
 
-    test('should logout', async () => {})
+        const blogs = screen.getByText('likes 13')
+        const blogs1 = screen.getByText('likes 0')
+
+        expect(blogs.compareDocumentPosition(blogs1)).toBe(2) //Node.DOCUMENT_POSITION_PRECEDING (2)
+
+        await userMock.click(buttonSort)
+
+        expect(blogs.compareDocumentPosition(blogs1)).toBe(4) // Node.DOCUMENT_POSITION_FOLLOWING (4)
+    })
 })
