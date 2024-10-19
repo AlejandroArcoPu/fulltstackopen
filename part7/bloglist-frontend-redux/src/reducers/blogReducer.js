@@ -22,6 +22,7 @@ const blogSlice = createSlice({
             state.push(action.payload)
         },
         patchBlog(state, action) {
+            console.log('aqui')
             return state.map((blog) =>
                 blog.id === action.payload.id ? action.payload : blog
             )

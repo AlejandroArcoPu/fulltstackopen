@@ -20,9 +20,9 @@ const BlogForm = ({ blogFormRef }) => {
                     notification: `a new blog ${title} by ${author} added`,
                 })
             )
-            event.target.title.value = ''
-            event.target.author.value = ''
-            event.target.url.value = ''
+            event.target.elements.title.value = ''
+            event.target.elements.author.value = ''
+            event.target.elements.url.value = ''
         } catch (error) {
             console.log(error)
             dispatch(
