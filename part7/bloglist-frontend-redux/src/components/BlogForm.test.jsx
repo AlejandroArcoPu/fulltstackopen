@@ -68,27 +68,5 @@ describe('<BlogForm />', () => {
                 },
             ],
         })
-        // expect(mockDispatch).toHaveBeenNthCalledWith(1, createBlog)
-        // expect(mockDispatch).toHaveBeenCalledWith(
-        //     createBlog(
-        //         asObject(
-        //             'testing a form...',
-        //             'Full Stack Open',
-        //             'https://learning.com'
-        //         )
-        //     )
-        // )
-        // expect(mockDispatch).toHaveBeenCalledWith(
-        //     createBlog(
-        //         asObject(
-        //             'testing a form...',
-        //             'Full Stack Open',
-        //             'https://learning.com'
-        //         )
-        //     )
-        // )
-        // expect(createBlog.mock.calls[0][0].title).toBe('testing a form...')
-        // expect(createBlog.mock.calls[0][0].author).toBe('Full Stack Open')
-        // expect(createBlog.mock.calls[0][0].url).toBe('https://learning.com')
     })
 })
