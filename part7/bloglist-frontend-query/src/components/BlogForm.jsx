@@ -8,7 +8,7 @@ const BlogForm = () => {
     const dispatch = useNotificationDispatch()
     const blogFormRef = useRefShare()
 
-    const mutation = useMutation({
+    const mutationAddBlog = useMutation({
         mutationFn: blogsService.create,
         onSuccess: (newBlog) => {
             const queryData = queryClient.getQueryData(['blogs'])
@@ -21,7 +21,7 @@ const BlogForm = () => {
                 dispatch('')
             }, 5000)
         },
-        onError: () => {
+        onError: (error) => {
             dispatch({
                 type: 'error',
                 message: `something is wrong with your blog: ${error}`,
@@ -40,7 +40,7 @@ const BlogForm = () => {
             author: event.target.author.value,
             url: event.target.url.value,
         }
-        mutation.mutate(newBlog)
+        mutationAddBlog.mutate(newBlog)
 
         event.target.title.value = ''
         event.target.author.value = ''

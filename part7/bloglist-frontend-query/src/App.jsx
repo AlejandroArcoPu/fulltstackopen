@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import LoginForm from './components/LoginForm'
 import Blog from './components/Blog'
 import loginService from './services/login'
@@ -7,14 +7,14 @@ import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import Toggable from './components/Toggable'
 import { useNotificationDispatch } from './components/NotificationContext'
-import { useQuery } from '@tanstack/react-query'
+import { useQueryClient, useQuery } from '@tanstack/react-query'
 import { useRefShare } from './components/ToggableContext'
 
 function App() {
     const [user, setUser] = useState(null)
-    // const [blogs, setBlogs] = useState([])
     const blogFormRef = useRefShare()
     const dispatch = useNotificationDispatch()
+    const queryClient = useQueryClient()
 
     useEffect(() => {
         const loggedUser = window.localStorage.getItem('loggedUserBlog')
@@ -42,14 +42,6 @@ function App() {
     }
 
     const blogs = result.data
-
-    // useEffect(() => {
-    //     const fetchBlogs = async () => {
-    //         const data = await blogsService.getAll()
-    //         setBlogs(data)
-    //     }
-    //     fetchBlogs()
-    // }, [])
 
     const handleSubmit = async ({ username, password }) => {
         try {
@@ -80,71 +72,7 @@ function App() {
 
     const handleSort = () => {
         const sortedBlogs = [...blogs].sort((bA, bB) => bB.likes - bA.likes)
-        setBlogs(sortedBlogs)
-    }
-
-    // const addNewBlog = async ({ title, author, url }) => {
-    //     try {
-    //         blogFormRef.current.toggleVisibility()
-    //         const newBlog = {
-    //             title,
-    //             author,
-    //             url,
-    //         }
-
-    //         // const result = await blogsService.create(newBlog)
-    //         // setBlogs(blogs.concat(result))
-    //         mutation.mutate(newBlog)
-    //     } catch (error) {
-    //         console.log(error)
-    //     }
-    // }
-
-    const increaseBlogLike = async (blogId) => {
-        try {
-            const blogToUpdate = blogs.find((blog) => blog.id === blogId)
-            let initialLikes = blogToUpdate.likes
-            initialLikes++
-            const newBlog = { ...blogToUpdate, likes: initialLikes }
-            const result = await blogsService.update(blogId, newBlog)
-            setBlogs(
-                blogs.map((blog) => (blog.id === result.id ? result : blog))
-            )
-        } catch (error) {
-            console.log(error)
-            dispatch({
-                type: 'error',
-                message: 'something is wrong with the update',
-            })
-            setTimeout(() => {
-                dispatch('')
-            }, 5000)
-        }
-    }
-
-    const removeBlog = async (blogId, blogTitle, blogAuthor) => {
-        try {
-            if (window.confirm(`Remove blog ${blogTitle} by ${blogAuthor}`)) {
-                await blogsService.remove(blogId)
-                setBlogs(blogs.filter((blog) => blog.id !== blogId))
-                dispatch({
-                    type: 'success',
-                    message: `the blog ${blogTitle} by ${blogAuthor} removed`,
-                })
-                setTimeout(() => {
-                    dispatch('')
-                }, 5000)
-            }
-        } catch (error) {
-            console.log(error)
-            dispatch({
-                type: 'error',
-                message: `something is happening with the removal ${error}`,
-            })
-            setTimeout(() => {
-                dispatch('')
-            }, 5000)
-        }
+        queryClient.setQueryData(['blogs'], sortedBlogs)
     }
 
     return (
@@ -166,15 +94,7 @@ function App() {
                     <button onClick={handleSort}>sort by likes</button>
 
                     {blogs.map((blog) => (
-                        <Blog
-                            key={blog.id}
-                            blog={blog}
-                            updateBlog={() => increaseBlogLike(blog.id)}
-                            removeBlog={() =>
-                                removeBlog(blog.id, blog.title, blog.author)
-                            }
-                            user={user}
-                        />
+                        <Blog key={blog.id} blog={blog} user={user} />
                     ))}
                 </>
             )}
