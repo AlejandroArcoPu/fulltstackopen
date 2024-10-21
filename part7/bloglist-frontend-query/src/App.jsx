@@ -7,20 +7,14 @@ import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import Toggable from './components/Toggable'
 import { useNotificationDispatch } from './components/NotificationContext'
+import { useQuery } from '@tanstack/react-query'
+import { useRefShare } from './components/ToggableContext'
 
 function App() {
     const [user, setUser] = useState(null)
-    const [blogs, setBlogs] = useState([])
-    const blogFormRef = useRef()
+    // const [blogs, setBlogs] = useState([])
+    const blogFormRef = useRefShare()
     const dispatch = useNotificationDispatch()
-
-    useEffect(() => {
-        const fetchBlogs = async () => {
-            const data = await blogsService.getAll()
-            setBlogs(data)
-        }
-        fetchBlogs()
-    }, [])
 
     useEffect(() => {
         const loggedUser = window.localStorage.getItem('loggedUserBlog')
@@ -30,6 +24,32 @@ function App() {
             blogsService.setToken(parseUser.token)
         }
     }, [])
+
+    const result = useQuery({
+        queryKey: ['blogs'],
+        queryFn: blogsService.getAll,
+        retry: 1,
+    })
+
+    if (result.isPending) {
+        return <span>Loading data...</span>
+    }
+
+    if (result.isError) {
+        return (
+            <span>blogs service not available due to problems in server</span>
+        )
+    }
+
+    const blogs = result.data
+
+    // useEffect(() => {
+    //     const fetchBlogs = async () => {
+    //         const data = await blogsService.getAll()
+    //         setBlogs(data)
+    //     }
+    //     fetchBlogs()
+    // }, [])
 
     const handleSubmit = async ({ username, password }) => {
         try {
@@ -63,34 +83,22 @@ function App() {
         setBlogs(sortedBlogs)
     }
 
-    const addNewBlog = async ({ title, author, url }) => {
-        try {
-            blogFormRef.current.toggleVisibility()
-            const newBlog = {
-                title,
-                author,
-                url,
-            }
-            const result = await blogsService.create(newBlog)
-            setBlogs(blogs.concat(result))
-            dispatch({
-                type: 'success',
-                message: `a new blog ${result.title} by ${result.author} added`,
-            })
-            setTimeout(() => {
-                dispatch('')
-            }, 5000)
-        } catch (error) {
-            console.log(error)
-            dispatch({
-                type: 'error',
-                message: `something is wrong with your blog: ${error}`,
-            })
-            setTimeout(() => {
-                dispatch('')
-            }, 5000)
-        }
-    }
+    // const addNewBlog = async ({ title, author, url }) => {
+    //     try {
+    //         blogFormRef.current.toggleVisibility()
+    //         const newBlog = {
+    //             title,
+    //             author,
+    //             url,
+    //         }
+
+    //         // const result = await blogsService.create(newBlog)
+    //         // setBlogs(blogs.concat(result))
+    //         mutation.mutate(newBlog)
+    //     } catch (error) {
+    //         console.log(error)
+    //     }
+    // }
 
     const increaseBlogLike = async (blogId) => {
         try {
@@ -152,7 +160,7 @@ function App() {
                         <button onClick={handleLogOut}>logout</button>
                     </p>
                     <Toggable label="create new blog" ref={blogFormRef}>
-                        <BlogForm createNewBlog={addNewBlog} />
+                        <BlogForm />
                     </Toggable>
 
                     <button onClick={handleSort}>sort by likes</button>

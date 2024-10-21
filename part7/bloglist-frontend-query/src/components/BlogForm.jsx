@@ -1,65 +1,72 @@
-import { useState } from "react";
-import PropTypes from "prop-types";
+import { useQueryClient, useMutation } from '@tanstack/react-query'
+import blogsService from '../services/blogs'
+import { useNotificationDispatch } from './NotificationContext'
+import { useRefShare } from './ToggableContext'
 
-const BlogForm = ({ createNewBlog }) => {
-  const [author, setAuthor] = useState("");
-  const [title, setTitle] = useState("");
-  const [url, setUrl] = useState("");
+const BlogForm = () => {
+    const queryClient = useQueryClient()
+    const dispatch = useNotificationDispatch()
+    const blogFormRef = useRefShare()
 
-  const addBlog = (event) => {
-    event.preventDefault();
-    createNewBlog({
-      title,
-      author,
-      url,
-    });
-    setTitle("");
-    setAuthor("");
-    setUrl("");
-  };
+    const mutation = useMutation({
+        mutationFn: blogsService.create,
+        onSuccess: (newBlog) => {
+            const queryData = queryClient.getQueryData(['blogs'])
+            queryClient.setQueryData(['blogs'], queryData.concat(newBlog))
+            dispatch({
+                type: 'success',
+                message: `a new blog ${newBlog.title} by ${newBlog.author} added`,
+            })
+            setTimeout(() => {
+                dispatch('')
+            }, 5000)
+        },
+        onError: () => {
+            dispatch({
+                type: 'error',
+                message: `something is wrong with your blog: ${error}`,
+            })
+            setTimeout(() => {
+                dispatch('')
+            }, 5000)
+        },
+    })
 
-  return (
-    <div>
-      <h1>create new</h1>
-      <form onSubmit={addBlog}>
+    const addBlog = (event) => {
+        event.preventDefault()
+        blogFormRef.current.toggleVisibility()
+        const newBlog = {
+            title: event.target.title.value,
+            author: event.target.author.value,
+            url: event.target.url.value,
+        }
+        mutation.mutate(newBlog)
+
+        event.target.title.value = ''
+        event.target.author.value = ''
+        event.target.url.value = ''
+    }
+
+    return (
         <div>
-          title:
-          <input
-            name="title"
-            type="text"
-            value={title}
-            onChange={({ target }) => setTitle(target.value)}
-            placeholder="title"
-          />
+            <h1>create new</h1>
+            <form onSubmit={addBlog}>
+                <div>
+                    title:
+                    <input name="title" type="text" placeholder="title" />
+                </div>
+                <div>
+                    author:
+                    <input name="author" type="text" placeholder="author" />
+                </div>
+                <div>
+                    url:
+                    <input name="url" type="text" placeholder="url" />
+                </div>
+                <button type="submit">create</button>
+            </form>
         </div>
-        <div>
-          author:
-          <input
-            name="author"
-            type="text"
-            value={author}
-            onChange={({ target }) => setAuthor(target.value)}
-            placeholder="author"
-          />
-        </div>
-        <div>
-          url:
-          <input
-            name="url"
-            type="text"
-            value={url}
-            onChange={({ target }) => setUrl(target.value)}
-            placeholder="url"
-          />
-        </div>
-        <button type="submit">create</button>
-      </form>
-    </div>
-  );
-};
+    )
+}
 
-BlogForm.propTypes = {
-  createNewBlog: PropTypes.func.isRequired,
-};
-
-export default BlogForm;
+export default BlogForm
