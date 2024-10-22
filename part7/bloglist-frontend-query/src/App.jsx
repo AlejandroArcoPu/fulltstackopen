@@ -10,6 +10,7 @@ import { useNotificationDispatch } from './components/NotificationContext'
 import { useQueryClient, useQuery } from '@tanstack/react-query'
 import { useRefShare } from './components/ToggableContext'
 import { useUserDispatch, useUserValue } from './components/UserContext'
+import { Outlet } from 'react-router-dom'
 
 function App() {
     const blogFormRef = useRefShare()
@@ -95,7 +96,8 @@ function App() {
                         {userValue.name} logged in
                         <button onClick={handleLogOut}>logout</button>
                     </p>
-                    <Toggable label="create new blog" ref={blogFormRef}>
+                    <Outlet />
+                    {/* <Toggable label="create new blog" ref={blogFormRef}>
                         <BlogForm />
                     </Toggable>
 
@@ -103,7 +105,7 @@ function App() {
 
                     {blogs.map((blog) => (
                         <Blog key={blog.id} blog={blog} />
-                    ))}
+                    ))} */}
                 </>
             )}
         </div>
