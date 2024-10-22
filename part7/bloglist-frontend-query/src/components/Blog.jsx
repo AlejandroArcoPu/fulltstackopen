@@ -2,9 +2,11 @@ import { useState } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import blogsService from '../services/blogs'
 import { useNotificationDispatch } from './NotificationContext'
+import { useUserValue } from './UserContext'
 
-const Blog = ({ blog, user }) => {
+const Blog = ({ blog }) => {
     const [view, setView] = useState(false)
+    const userValue = useUserValue()
     const queryClient = useQueryClient()
     const dispatch = useNotificationDispatch()
 
@@ -133,7 +135,8 @@ const Blog = ({ blog, user }) => {
                 <div>{blog.user.name}</div>
                 <div
                     style={{
-                        display: user.name === blog.user.name ? '' : 'none',
+                        display:
+                            userValue.name === blog.user.name ? '' : 'none',
                     }}
                 >
                     <button onClick={() => removeBlog(blog)}>remove</button>

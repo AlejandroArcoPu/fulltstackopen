@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import LoginForm from './components/LoginForm'
 import Blog from './components/Blog'
 import loginService from './services/login'
@@ -9,18 +9,20 @@ import Toggable from './components/Toggable'
 import { useNotificationDispatch } from './components/NotificationContext'
 import { useQueryClient, useQuery } from '@tanstack/react-query'
 import { useRefShare } from './components/ToggableContext'
+import { useUserDispatch, useUserValue } from './components/UserContext'
 
 function App() {
-    const [user, setUser] = useState(null)
     const blogFormRef = useRefShare()
-    const dispatch = useNotificationDispatch()
+    const dispatchNotification = useNotificationDispatch()
+    const dispatchUser = useUserDispatch()
+    const userValue = useUserValue()
     const queryClient = useQueryClient()
 
     useEffect(() => {
         const loggedUser = window.localStorage.getItem('loggedUserBlog')
         if (loggedUser) {
             const parseUser = JSON.parse(loggedUser)
-            setUser(parseUser)
+            dispatchUser({ type: 'login', user: parseUser })
             blogsService.setToken(parseUser.token)
         }
     }, [])
@@ -50,24 +52,30 @@ function App() {
                 password,
             })
             window.localStorage.setItem('loggedUserBlog', JSON.stringify(user))
-            setUser(user)
+            dispatchUser({ type: 'login', user: user })
             blogsService.setToken(user.token)
         } catch (error) {
             console.log(error)
-            dispatch({ type: 'error', message: 'wrong username or password' })
+            dispatchNotification({
+                type: 'error',
+                message: 'wrong username or password',
+            })
             setTimeout(() => {
-                dispatch('')
+                dispatchNotification('')
             }, 5000)
         }
     }
 
     const handleLogOut = () => {
         window.localStorage.removeItem('loggedUserBlog')
-        dispatch({ type: 'success', message: 'bye, come back soon :)' })
+        dispatchUser({ type: 'logout' })
+        dispatchNotification({
+            type: 'success',
+            message: 'bye, come back soon :)',
+        })
         setTimeout(() => {
-            dispatch('')
+            dispatchNotification('')
         }, 5000)
-        setUser(null)
     }
 
     const handleSort = () => {
@@ -78,13 +86,13 @@ function App() {
     return (
         <div>
             <Notification />
-            {user === null ? (
+            {userValue === null ? (
                 <LoginForm handleSubmit={handleSubmit} />
             ) : (
                 <>
                     <h1>blogs</h1>
                     <p>
-                        {user.name} logged in
+                        {userValue.name} logged in
                         <button onClick={handleLogOut}>logout</button>
                     </p>
                     <Toggable label="create new blog" ref={blogFormRef}>
@@ -94,7 +102,7 @@ function App() {
                     <button onClick={handleSort}>sort by likes</button>
 
                     {blogs.map((blog) => (
-                        <Blog key={blog.id} blog={blog} user={user} />
+                        <Blog key={blog.id} blog={blog} />
                     ))}
                 </>
             )}
