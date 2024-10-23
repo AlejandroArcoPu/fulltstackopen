@@ -8,6 +8,7 @@ import { ToggableContextProvider } from './components/ToggableContext.jsx'
 import { UserContextProvider } from './components/UserContext.jsx'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Users from './routes/users.jsx'
+import User from './routes/user.jsx'
 
 const queryClient = new QueryClient()
 
@@ -39,6 +40,14 @@ const router = createBrowserRouter([
                 element: (
                     <QueryClientProvider client={queryClient}>
                         <Users />
+                    </QueryClientProvider>
+                ),
+            },
+            {
+                path: 'users/:userId',
+                element: (
+                    <QueryClientProvider client={queryClient}>
+                        <User />
                     </QueryClientProvider>
                 ),
             },

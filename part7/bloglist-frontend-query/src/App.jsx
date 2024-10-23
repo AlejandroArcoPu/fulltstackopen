@@ -10,7 +10,7 @@ import { useNotificationDispatch } from './components/NotificationContext'
 import { useQueryClient, useQuery } from '@tanstack/react-query'
 import { useRefShare } from './components/ToggableContext'
 import { useUserDispatch, useUserValue } from './components/UserContext'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useLocation } from 'react-router-dom'
 
 function App() {
     const blogFormRef = useRefShare()
@@ -18,6 +18,7 @@ function App() {
     const dispatchUser = useUserDispatch()
     const userValue = useUserValue()
     const queryClient = useQueryClient()
+    const location = useLocation()
 
     useEffect(() => {
         const loggedUser = window.localStorage.getItem('loggedUserBlog')
@@ -91,12 +92,14 @@ function App() {
                 <LoginForm handleSubmit={handleSubmit} />
             ) : (
                 <>
-                    <h1>blogs</h1>
-                    <p>
-                        {userValue.name} logged in
-                        <button onClick={handleLogOut}>logout</button>
-                    </p>
+                    <h1>blogs 🗒️</h1>
+                    <p>{userValue.name} logged in</p>
+                    <button onClick={handleLogOut}>logout</button>
                     <Outlet />
+
+                    {location.pathname === '/' &&
+                        blogs.map((blog) => <Blog key={blog.id} blog={blog} />)}
+
                     {/* <Toggable label="create new blog" ref={blogFormRef}>
                         <BlogForm />
                     </Toggable>
