@@ -11,6 +11,9 @@ import { useQueryClient, useQuery } from '@tanstack/react-query'
 import { useRefShare } from './components/ToggableContext'
 import { useUserDispatch, useUserValue } from './components/UserContext'
 import UserList from './components/UserList'
+import userServices from './services/users'
+import User from './components/user'
+
 import {
     Routes,
     Route,
@@ -27,6 +30,7 @@ function App() {
     const dispatchUser = useUserDispatch()
     const userValue = useUserValue()
     const queryClient = useQueryClient()
+    const match = useMatch('/users/:id')
 
     useEffect(() => {
         const loggedUser = window.localStorage.getItem('loggedUserBlog')
@@ -43,6 +47,12 @@ function App() {
         retry: 1,
     })
 
+    const resultUsers = useQuery({
+        queryFn: userServices.getAll,
+        queryKey: ['users'],
+        retry: 1,
+    })
+
     if (result.isPending) {
         return <span>Loading data...</span>
     }
@@ -54,7 +64,8 @@ function App() {
     }
 
     const blogs = result.data
-
+    const users = resultUsers.data
+    // console.log(match)
     const handleSubmit = async ({ username, password }) => {
         try {
             const user = await loginService.login({
@@ -92,6 +103,11 @@ function App() {
         const sortedBlogs = [...blogs].sort((bA, bB) => bB.likes - bA.likes)
         queryClient.setQueryData(['blogs'], sortedBlogs)
     }
+
+    const user = match
+        ? users.find((user) => user.id === Number(match.params.id))
+        : null
+
     return (
         <div>
             <Notification />
@@ -113,7 +129,14 @@ function App() {
                         <Blog key={blog.id} blog={blog} />
                     ))} */}
                     <Routes>
-                        <Route path="/users" element={<UserList />} />
+                        <Route
+                            path="/users"
+                            element={<UserList users={users} />}
+                        />
+                        <Route
+                            path="/users/:id"
+                            element={<User user={user} />}
+                        />
                     </Routes>
                 </>
             )}
