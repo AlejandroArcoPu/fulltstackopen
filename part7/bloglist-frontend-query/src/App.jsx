@@ -82,7 +82,6 @@ function App() {
         const sortedBlogs = [...blogs].sort((bA, bB) => bB.likes - bA.likes)
         queryClient.setQueryData(['blogs'], sortedBlogs)
     }
-
     return (
         <div>
             <Notification />
