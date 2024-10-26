@@ -105,7 +105,7 @@ function App() {
     }
 
     const user = match
-        ? users.find((user) => user.id === Number(match.params.id))
+        ? users.find((user) => user.id === match.params.id)
         : null
 
     return (
