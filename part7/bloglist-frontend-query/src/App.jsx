@@ -1,16 +1,15 @@
 import { useEffect } from 'react'
 import LoginForm from './components/LoginForm'
 import Blog from './components/Blog'
-import loginService from './services/login'
 import blogsService from './services/blogs'
 import Notification from './components/Notification'
-import { useNotificationDispatch } from './components/NotificationContext'
 import { useQuery } from '@tanstack/react-query'
 import { useUserDispatch, useUserValue } from './components/UserContext'
 import UserList from './components/UserList'
 import BlogList from './components/BlogList'
 import userServices from './services/users'
 import User from './components/user'
+import { jwtDecode } from 'jwt-decode'
 
 import {
     Routes,
@@ -24,7 +23,6 @@ import {
 import NavBar from './components/NavBar'
 
 function App() {
-    const dispatchNotification = useNotificationDispatch()
     const dispatchUser = useUserDispatch()
     const userValue = useUserValue()
     const matchUsers = useMatch('/users/:id')
@@ -32,6 +30,13 @@ function App() {
 
     useEffect(() => {
         const loggedUser = window.localStorage.getItem('loggedUserBlog')
+        const decodedToken = jwtDecode(JSON.parse(loggedUser).token)
+        let currentDate = new Date()
+
+        if (decodedToken.exp * 1000 > currentDate.getTime()) {
+            dispatchUser({ type: 'logout' })
+        }
+
         if (loggedUser) {
             const parseUser = JSON.parse(loggedUser)
             dispatchUser({ type: 'login', user: parseUser })
