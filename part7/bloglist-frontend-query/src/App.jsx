@@ -3,14 +3,12 @@ import LoginForm from './components/LoginForm'
 import Blog from './components/Blog'
 import loginService from './services/login'
 import blogsService from './services/blogs'
-import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
-import Toggable from './components/Toggable'
 import { useNotificationDispatch } from './components/NotificationContext'
-import { useQueryClient, useQuery } from '@tanstack/react-query'
-import { useRefShare } from './components/ToggableContext'
+import { useQuery } from '@tanstack/react-query'
 import { useUserDispatch, useUserValue } from './components/UserContext'
 import UserList from './components/UserList'
+import BlogList from './components/BlogList'
 import userServices from './services/users'
 import User from './components/user'
 
@@ -23,14 +21,14 @@ import {
     useMatch,
     useNavigate,
 } from 'react-router-dom'
+import NavBar from './components/NavBar'
 
 function App() {
-    const blogFormRef = useRefShare()
     const dispatchNotification = useNotificationDispatch()
     const dispatchUser = useUserDispatch()
     const userValue = useUserValue()
-    const queryClient = useQueryClient()
-    const match = useMatch('/users/:id')
+    const matchUsers = useMatch('/users/:id')
+    const matchBlogs = useMatch('/blogs/:id')
 
     useEffect(() => {
         const loggedUser = window.localStorage.getItem('loggedUserBlog')
@@ -65,7 +63,7 @@ function App() {
 
     const blogs = result.data
     const users = resultUsers.data
-    // console.log(match)
+
     const handleSubmit = async ({ username, password }) => {
         try {
             const user = await loginService.login({
@@ -87,25 +85,12 @@ function App() {
         }
     }
 
-    const handleLogOut = () => {
-        window.localStorage.removeItem('loggedUserBlog')
-        dispatchUser({ type: 'logout' })
-        dispatchNotification({
-            type: 'success',
-            message: 'bye, come back soon :)',
-        })
-        setTimeout(() => {
-            dispatchNotification('')
-        }, 5000)
-    }
+    const user = matchUsers
+        ? users.find((user) => user.id === matchUsers.params.id)
+        : null
 
-    const handleSort = () => {
-        const sortedBlogs = [...blogs].sort((bA, bB) => bB.likes - bA.likes)
-        queryClient.setQueryData(['blogs'], sortedBlogs)
-    }
-
-    const user = match
-        ? users.find((user) => user.id === match.params.id)
+    const blog = matchBlogs
+        ? blogs.find((blog) => blog.id === matchBlogs.params.id)
         : null
 
     return (
@@ -115,20 +100,12 @@ function App() {
                 <LoginForm handleSubmit={handleSubmit} />
             ) : (
                 <>
-                    <h1>blogs</h1>
-                    <p>{userValue.name} logged in</p>
-                    <button onClick={handleLogOut}>logout</button>
+                    <NavBar />
 
-                    {/* <Toggable label="create new blog" ref={blogFormRef}>
-                        <BlogForm />
-                    </Toggable>
+                    <h1>blog app</h1>
 
-                    <button onClick={handleSort}>sort by likes</button>
-
-                    {blogs.map((blog) => (
-                        <Blog key={blog.id} blog={blog} />
-                    ))} */}
                     <Routes>
+                        <Route path="/" element={<BlogList blogs={blogs} />} />
                         <Route
                             path="/users"
                             element={<UserList users={users} />}
@@ -136,6 +113,10 @@ function App() {
                         <Route
                             path="/users/:id"
                             element={<User user={user} />}
+                        />
+                        <Route
+                            path="/blogs/:id"
+                            element={<Blog blog={blog} />}
                         />
                     </Routes>
                 </>

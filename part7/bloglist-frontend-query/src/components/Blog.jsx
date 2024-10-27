@@ -1,11 +1,9 @@
-import { useState } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import blogsService from '../services/blogs'
 import { useNotificationDispatch } from './NotificationContext'
 import { useUserValue } from './UserContext'
 
 const Blog = ({ blog }) => {
-    const [view, setView] = useState(false)
     const userValue = useUserValue()
     const queryClient = useQueryClient()
     const dispatch = useNotificationDispatch()
@@ -93,55 +91,24 @@ const Blog = ({ blog }) => {
         }
     }
 
-    const handleView = () => {
-        setView(!view)
-    }
-
-    const showWhenView = { display: view ? '' : 'none' }
-    const hiddenWhenView = { display: view ? 'none' : '' }
-
-    const blogStyle = {
-        paddingTop: 10,
-        paddingLeft: 2,
-        border: 'solid',
-        borderWidth: 1,
-        marginBottom: 5,
-    }
-
     return (
-        <div className="blog">
-            <div
-                style={{ ...blogStyle, ...hiddenWhenView }}
-                className="defaultBlog"
-            >
-                {blog.title} {blog.author}{' '}
-                <button onClick={handleView}>view</button>
+        <div>
+            <h1>
+                {blog.title} - {blog.author}
+            </h1>
+            <a href={blog.url}>{blog.url}</a>
+            <div>
+                likes {blog.likes}
+                <button onClick={() => increaseBlogLike(blog)}>likes</button>
             </div>
             <div
-                style={{ ...blogStyle, ...showWhenView }}
-                className="clickBlog"
+                style={{
+                    display: userValue.name === blog.user.name ? '' : 'none',
+                }}
             >
-                <div>
-                    {blog.title} {blog.author}
-                    <button onClick={handleView}>hide</button>
-                </div>
-                <div>{blog.url}</div>
-                <div>
-                    likes {blog.likes}
-                    <button onClick={() => increaseBlogLike(blog)}>
-                        likes
-                    </button>
-                </div>
-                <div>{blog.user.name}</div>
-                <div
-                    style={{
-                        display:
-                            userValue.name === blog.user.name ? '' : 'none',
-                    }}
-                >
-                    <button onClick={() => removeBlog(blog)}>remove</button>
-                </div>
+                <button onClick={() => removeBlog(blog)}>remove</button>
             </div>
+            <div>added by {blog.user.name}</div>
         </div>
     )
 }
