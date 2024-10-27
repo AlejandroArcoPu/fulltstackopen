@@ -70,6 +70,7 @@ blogsRouter.post(
   "/:id/comments",
   middleware.userExtractor,
   async (request, response) => {
+    console.log(request.body);
     const comment = request.body.comment;
     if (comment) {
       const blog = await Blog.findById(request.params.id);

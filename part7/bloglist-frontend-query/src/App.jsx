@@ -30,17 +30,18 @@ function App() {
 
     useEffect(() => {
         const loggedUser = window.localStorage.getItem('loggedUserBlog')
-        const decodedToken = jwtDecode(JSON.parse(loggedUser).token)
-        let currentDate = new Date()
-
-        if (decodedToken.exp * 1000 > currentDate.getTime()) {
-            dispatchUser({ type: 'logout' })
-        }
 
         if (loggedUser) {
-            const parseUser = JSON.parse(loggedUser)
-            dispatchUser({ type: 'login', user: parseUser })
-            blogsService.setToken(parseUser.token)
+            const decodedToken = jwtDecode(JSON.parse(loggedUser).token)
+            let currentDate = new Date()
+            if (decodedToken.exp * 1000 < currentDate.getTime()) {
+                dispatchUser({ type: 'logout' })
+                window.localStorage.removeItem('loggedUserBlog')
+            } else {
+                const parseUser = JSON.parse(loggedUser)
+                dispatchUser({ type: 'login', user: parseUser })
+                blogsService.setToken(parseUser.token)
+            }
         }
     }, [])
 

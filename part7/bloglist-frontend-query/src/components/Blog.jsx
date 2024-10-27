@@ -10,6 +10,20 @@ const Blog = ({ blog }) => {
     const dispatch = useNotificationDispatch()
     const navigate = useNavigate()
 
+    const addNewComment = useMutation({
+        mutationFn: ({ blogId, comment }) =>
+            blogsService.addComment(blogId, comment),
+        onSuccess: (newBlog) => {
+            const queryData = queryClient.getQueryData(['blogs'])
+            queryClient.setQueryData(
+                ['blogs'],
+                queryData.map((blog) =>
+                    blog.id === newBlog.id ? newBlog : blog
+                )
+            )
+        },
+    })
+
     const increaseLikesMutation = useMutation({
         mutationFn: blogsService.update,
         onSuccess: (newBlog) => {
@@ -94,6 +108,14 @@ const Blog = ({ blog }) => {
         }
     }
 
+    const handleComment = (event) => {
+        event.preventDefault()
+        const comment = event.target.comment.value
+        console.log(comment)
+        addNewComment.mutate({ blogId: blog.id, comment })
+        event.target.comment.value = ''
+    }
+
     return (
         <div>
             <h1>
@@ -113,6 +135,16 @@ const Blog = ({ blog }) => {
             </div>
             <div>added by {blog.user.name}</div>
             <h2>comments</h2>
+            <form onSubmit={handleComment}>
+                <input name="comment" type="text" />
+                <button type="submit">add comment</button>
+            </form>
+
+            <ul>
+                {blog.comments.map((comment, idx) => (
+                    <li key={idx}>{comment}</li>
+                ))}
+            </ul>
         </div>
     )
 }
