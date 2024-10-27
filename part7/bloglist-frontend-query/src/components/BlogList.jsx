@@ -8,7 +8,7 @@ const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
     border: 'solid',
-    borderWidth: 1,
+    borderWidth: 2,
     marginBottom: 5,
 }
 
@@ -21,7 +21,7 @@ const BlogList = ({ blogs }) => {
         queryClient.setQueryData(['blogs'], sortedBlogs)
     }
     return (
-        <div>
+        <main>
             <Toggable label="create new blog" ref={blogFormRef}>
                 <BlogForm />
             </Toggable>
@@ -33,7 +33,7 @@ const BlogList = ({ blogs }) => {
                     </Link>
                 </div>
             ))}
-        </div>
+        </main>
     )
 }
 

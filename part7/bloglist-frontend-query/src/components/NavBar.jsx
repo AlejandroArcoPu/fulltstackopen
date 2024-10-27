@@ -24,17 +24,17 @@ const NavBar = () => {
         paddingLeft: 2,
         borderWidth: 1,
         marginBottom: 5,
-        background: 'lightgray',
+        background: 'orange',
         gap: 5,
         display: 'flex',
     }
     return (
-        <div style={navbar}>
+        <nav style={navbar}>
             <Link to="/">blogs</Link>
             <Link to="/users">users</Link>
-            {userValue.name} logged in
+            <strong>{userValue.name}</strong> logged in
             <button onClick={handleLogOut}>logout</button>
-        </div>
+        </nav>
     )
 }
 

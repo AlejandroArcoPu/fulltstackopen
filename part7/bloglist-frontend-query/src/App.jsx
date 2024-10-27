@@ -64,27 +64,6 @@ function App() {
     const blogs = result.data
     const users = resultUsers.data
 
-    const handleSubmit = async ({ username, password }) => {
-        try {
-            const user = await loginService.login({
-                username,
-                password,
-            })
-            window.localStorage.setItem('loggedUserBlog', JSON.stringify(user))
-            dispatchUser({ type: 'login', user: user })
-            blogsService.setToken(user.token)
-        } catch (error) {
-            console.log(error)
-            dispatchNotification({
-                type: 'error',
-                message: 'wrong username or password',
-            })
-            setTimeout(() => {
-                dispatchNotification('')
-            }, 5000)
-        }
-    }
-
     const user = matchUsers
         ? users.find((user) => user.id === matchUsers.params.id)
         : null
@@ -94,15 +73,15 @@ function App() {
         : null
 
     return (
-        <div>
+        <>
             <Notification />
             {userValue === null ? (
-                <LoginForm handleSubmit={handleSubmit} />
+                <LoginForm />
             ) : (
                 <>
                     <NavBar />
 
-                    <h1>blog app</h1>
+                    <h1>blog app 📝</h1>
 
                     <Routes>
                         <Route path="/" element={<BlogList blogs={blogs} />} />
@@ -121,7 +100,7 @@ function App() {
                     </Routes>
                 </>
             )}
-        </div>
+        </>
     )
 }
 

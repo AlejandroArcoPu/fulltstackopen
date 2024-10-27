@@ -2,11 +2,13 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import blogsService from '../services/blogs'
 import { useNotificationDispatch } from './NotificationContext'
 import { useUserValue } from './UserContext'
+import { useNavigate } from 'react-router-dom'
 
 const Blog = ({ blog }) => {
     const userValue = useUserValue()
     const queryClient = useQueryClient()
     const dispatch = useNotificationDispatch()
+    const navigate = useNavigate()
 
     const increaseLikesMutation = useMutation({
         mutationFn: blogsService.update,
@@ -78,6 +80,7 @@ const Blog = ({ blog }) => {
                 setTimeout(() => {
                     dispatch('')
                 }, 5000)
+                navigate('/', { replace: true })
             }
         } catch (error) {
             console.log(error)

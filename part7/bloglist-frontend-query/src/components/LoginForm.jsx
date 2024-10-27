@@ -1,49 +1,56 @@
-import { useState } from "react";
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types'
+import loginService from '../services/login'
+import blogsService from '../services/blogs'
+import { useUserDispatch } from './UserContext'
+import { useNotificationDispatch } from './NotificationContext'
 
-const LoginForm = ({ handleSubmit }) => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+const LoginForm = () => {
+    const dispatchUser = useUserDispatch()
+    const dispatchNotification = useNotificationDispatch()
+    const handleLogin = async (event) => {
+        try {
+            event.preventDefault()
+            const username = event.target.username.value
+            const password = event.target.password.value
+            const user = await loginService.login({
+                username,
+                password,
+            })
+            window.localStorage.setItem('loggedUserBlog', JSON.stringify(user))
+            dispatchUser({ type: 'login', user: user })
+            blogsService.setToken(user.token)
+        } catch (error) {
+            console.log(error)
+            dispatchNotification({
+                type: 'error',
+                message: 'wrong username or password',
+            })
+            setTimeout(() => {
+                dispatchNotification('')
+            }, 5000)
+        }
+    }
 
-  const handleLogin = (event) => {
-    event.preventDefault();
-    handleSubmit({ username, password });
-    setUsername("");
-    setPassword("");
-  };
-
-  return (
-    <div>
-      <h1>log in to application</h1>
-      <form onSubmit={handleLogin}>
+    return (
         <div>
-          username
-          <input
-            name="username"
-            type="text"
-            value={username}
-            data-testid="username"
-            onChange={({ target }) => setUsername(target.value)}
-          />
+            <h1>log in to application</h1>
+            <form onSubmit={handleLogin}>
+                <div>
+                    username
+                    <input name="username" type="text" data-testid="username" />
+                </div>
+                <div>
+                    password
+                    <input
+                        name="password"
+                        type="password"
+                        data-testid="password"
+                    />
+                </div>
+                <button type="submit">login</button>
+            </form>
         </div>
-        <div>
-          password
-          <input
-            name="password"
-            type="password"
-            value={password}
-            data-testid="password"
-            onChange={({ target }) => setPassword(target.value)}
-          />
-        </div>
-        <button type="submit">login</button>
-      </form>
-    </div>
-  );
-};
+    )
+}
 
-LoginForm.propTypes = {
-  handleSubmit: PropTypes.func.isRequired,
-};
-
-export default LoginForm;
+export default LoginForm
