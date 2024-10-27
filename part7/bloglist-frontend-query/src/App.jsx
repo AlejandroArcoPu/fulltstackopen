@@ -87,8 +87,6 @@ function App() {
                 <>
                     <NavBar />
 
-                    <h1>blog app 📝</h1>
-
                     <Routes>
                         <Route path="/" element={<BlogList blogs={blogs} />} />
                         <Route
