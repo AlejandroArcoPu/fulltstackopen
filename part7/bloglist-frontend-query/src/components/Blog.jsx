@@ -112,6 +112,7 @@ const Blog = ({ blog }) => {
                 <button onClick={() => removeBlog(blog)}>remove</button>
             </div>
             <div>added by {blog.user.name}</div>
+            <h2>comments</h2>
         </div>
     )
 }
