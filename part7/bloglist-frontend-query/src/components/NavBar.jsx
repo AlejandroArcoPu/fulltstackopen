@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { useState } from 'react'
 import { useUserValue, useUserDispatch } from './UserContext'
 import { useNotificationDispatch } from './NotificationContext'
 import AppBar from '@mui/material/AppBar'
@@ -9,11 +10,26 @@ import Toolbar from '@mui/material/Toolbar'
 import ExitToAppIcon from '@mui/icons-material/ExitToApp'
 import IconButton from '@mui/material/IconButton'
 import AccountCircle from '@mui/icons-material/AccountCircle'
+import MenuItem from '@mui/material/MenuItem'
+import Menu from '@mui/material/Menu'
+import ListItemIcon from '@mui/material/ListItemIcon'
+import Logout from '@mui/icons-material/Logout'
+import Avatar from '@mui/material/Avatar'
+import Divider from '@mui/material/Divider'
 
 const NavBar = () => {
     const userValue = useUserValue()
     const dispatchUser = useUserDispatch()
     const dispatchNotification = useNotificationDispatch()
+    const [anchorEl, setAnchorEl] = useState(null)
+
+    const handleMenu = (event) => {
+        setAnchorEl(event.currentTarget)
+    }
+
+    const handleClose = () => {
+        setAnchorEl(null)
+    }
 
     const handleLogOut = () => {
         window.localStorage.removeItem('loggedUserBlog')
@@ -50,25 +66,38 @@ const NavBar = () => {
                     {/* <div>
                 <Link to="/">blogs</Link>
                 <Link to="/users">users</Link>
-                <strong>{userValue.name}</strong> logged in
             </div> */}
-                    <Button
-                        onClick={handleLogOut}
-                        endIcon={<ExitToAppIcon />}
-                        color="inherit"
-                    >
-                        exit
-                    </Button>
+
                     <IconButton
                         size="large"
                         aria-label="account of current user"
                         aria-controls="menu-appbar"
                         aria-haspopup="true"
-                        // onClick={handleMenu}s
+                        onClick={handleMenu}
                         color="inherit"
                     >
-                        <AccountCircle />
+                        <Avatar sx={{ width: 32, height: 32 }}>
+                            {userValue.name[0]}
+                        </Avatar>
                     </IconButton>
+                    <Menu
+                        id="menu-appbar"
+                        anchorEl={anchorEl}
+                        open={Boolean(anchorEl)}
+                        onClose={handleClose}
+                    >
+                        <MenuItem onClick={handleClose}>
+                            <Avatar style={{ marginRight: 10 }} />{' '}
+                            {userValue.name}
+                        </MenuItem>
+                        <Divider />
+                        <MenuItem onClick={handleLogOut}>
+                            <ListItemIcon>
+                                <Logout fontSize="small" />
+                            </ListItemIcon>
+                            Logout
+                        </MenuItem>
+                    </Menu>
                 </Toolbar>
             </AppBar>
         </Box>

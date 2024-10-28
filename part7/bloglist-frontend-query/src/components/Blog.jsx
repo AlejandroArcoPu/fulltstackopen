@@ -111,7 +111,6 @@ const Blog = ({ blog }) => {
     const handleComment = (event) => {
         event.preventDefault()
         const comment = event.target.comment.value
-        console.log(comment)
         addNewComment.mutate({ blogId: blog.id, comment })
         event.target.comment.value = ''
     }

@@ -1,4 +1,5 @@
 import { useNotificationValue } from './NotificationContext'
+import Alert from '@mui/material/Alert'
 
 const Notification = () => {
     const { type, message } = useNotificationValue()
@@ -6,11 +7,7 @@ const Notification = () => {
     if (message == null) {
         return null
     }
-    return (
-        <div className={`notification ${type}`}>
-            <h3>{message}</h3>
-        </div>
-    )
+    return <Alert severity={`${type}`}>{message}</Alert>
 }
 
 export default Notification
