@@ -3,6 +3,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useRefShare } from './ToggableContext'
 import Toggable from './Toggable'
 import BlogForm from './BlogForm'
+import Button from '@mui/material/Button'
 
 const blogStyle = {
     paddingTop: 10,
@@ -25,7 +26,15 @@ const BlogList = ({ blogs }) => {
             <Toggable label="create new blog" ref={blogFormRef}>
                 <BlogForm />
             </Toggable>
-            <button onClick={handleSort}>sort by likes</button>
+            <Button
+                style={{ borderRadius: 8 }}
+                size="small"
+                onClick={handleSort}
+                variant="outlined"
+                color="secondary"
+            >
+                sort
+            </Button>
             {blogs.map((blog) => (
                 <div key={blog.id} style={blogStyle}>
                     <Link to={`/blogs/${blog.id}`}>

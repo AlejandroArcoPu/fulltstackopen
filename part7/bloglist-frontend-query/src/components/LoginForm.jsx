@@ -2,6 +2,8 @@ import loginService from '../services/login'
 import blogsService from '../services/blogs'
 import { useUserDispatch } from './UserContext'
 import { useNotificationDispatch } from './NotificationContext'
+import TextField from '@mui/material/TextField'
+import Button from '@mui/material/Button'
 
 const LoginForm = () => {
     const dispatchUser = useUserDispatch()
@@ -31,22 +33,43 @@ const LoginForm = () => {
     }
 
     return (
-        <div>
-            <h1>log in to application</h1>
-            <form onSubmit={handleLogin}>
+        <div
+            style={{
+                display: 'grid',
+                placeItems: 'center',
+            }}
+        >
+            <h1>Log in</h1>
+            <form
+                style={{
+                    display: 'grid',
+                    placeItems: 'center',
+                }}
+                onSubmit={handleLogin}
+            >
                 <div>
-                    username
-                    <input name="username" type="text" data-testid="username" />
-                </div>
-                <div>
-                    password
-                    <input
-                        name="password"
-                        type="password"
-                        data-testid="password"
+                    <TextField
+                        required
+                        name="username"
+                        id="outlined-required"
+                        label="Username"
+                        sx={{ mb: 2 }}
                     />
                 </div>
-                <button type="submit">login</button>
+                <div>
+                    <TextField
+                        required
+                        name="password"
+                        id="outlined-password-input"
+                        label="Password"
+                        type="password"
+                        autoComplete="current-password"
+                        sx={{ mb: 2 }}
+                    />
+                </div>
+                <Button type="submit" variant="outlined">
+                    login
+                </Button>
             </form>
         </div>
     )

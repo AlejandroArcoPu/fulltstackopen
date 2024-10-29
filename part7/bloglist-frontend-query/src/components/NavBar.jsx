@@ -16,19 +16,28 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import Logout from '@mui/icons-material/Logout'
 import Avatar from '@mui/material/Avatar'
 import Divider from '@mui/material/Divider'
+import MenuIcon from '@mui/icons-material/Menu'
 
 const NavBar = () => {
     const userValue = useUserValue()
     const dispatchUser = useUserDispatch()
     const dispatchNotification = useNotificationDispatch()
-    const [anchorEl, setAnchorEl] = useState(null)
+    const [anchorElNav, setAnchorElNav] = useState(null)
+    const [anchorElUser, setAnchorElUser] = useState(null)
 
-    const handleMenu = (event) => {
-        setAnchorEl(event.currentTarget)
+    const handleMenuNav = (event) => {
+        setAnchorElNav(event.currentTarget)
+    }
+    const handleMenuUser = (event) => {
+        setAnchorElUser(event.currentTarget)
     }
 
-    const handleClose = () => {
-        setAnchorEl(null)
+    const handleCloseNav = () => {
+        setAnchorElNav(null)
+    }
+
+    const handleCloseUser = () => {
+        setAnchorElUser(null)
     }
 
     const handleLogOut = () => {
@@ -43,64 +52,68 @@ const NavBar = () => {
         }, 5000)
     }
 
-    // const navbar = {
-    //     paddingTop: 10,
-    //     paddingLeft: 2,
-    //     borderWidth: 1,
-    //     marginBottom: 5,
-    //     background: 'orange',
-    //     gap: 5,
-    //     display: 'flex',
-    // }
     return (
-        <Box sx={{ flexGrow: 1 }}>
-            <AppBar position="static">
-                <Toolbar>
-                    <Typography
-                        variant="h6"
-                        component="div"
-                        sx={{ flexGrow: 1 }}
-                    >
-                        📝 Blog App
-                    </Typography>
-                    {/* <div>
-                <Link to="/">blogs</Link>
-                <Link to="/users">users</Link>
-            </div> */}
-
+        <AppBar position="static">
+            <Toolbar>
+                <Box sx={{ flexGrow: 1, display: 'flex' }}>
                     <IconButton
                         size="large"
                         aria-label="account of current user"
                         aria-controls="menu-appbar"
                         aria-haspopup="true"
-                        onClick={handleMenu}
+                        onClick={handleMenuNav}
                         color="inherit"
                     >
-                        <Avatar sx={{ width: 32, height: 32 }}>
-                            {userValue.name[0]}
-                        </Avatar>
+                        <MenuIcon />
                     </IconButton>
                     <Menu
                         id="menu-appbar"
-                        anchorEl={anchorEl}
-                        open={Boolean(anchorEl)}
-                        onClose={handleClose}
+                        anchorEl={anchorElNav}
+                        open={Boolean(anchorElNav)}
+                        onClose={handleCloseNav}
                     >
-                        <MenuItem onClick={handleClose}>
-                            <Avatar style={{ marginRight: 10 }} />{' '}
-                            {userValue.name}
+                        <MenuItem component={Link} to="/">
+                            Blogs
                         </MenuItem>
-                        <Divider />
-                        <MenuItem onClick={handleLogOut}>
-                            <ListItemIcon>
-                                <Logout fontSize="small" />
-                            </ListItemIcon>
-                            Logout
+                        <MenuItem component={Link} to="/users">
+                            Users
                         </MenuItem>
                     </Menu>
-                </Toolbar>
-            </AppBar>
-        </Box>
+                </Box>
+                <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                    📝 Blogs
+                </Typography>
+                <IconButton
+                    size="large"
+                    aria-label="account of current user"
+                    aria-controls="menu-appbar"
+                    aria-haspopup="true"
+                    onClick={handleMenuUser}
+                    color="inherit"
+                >
+                    <Avatar sx={{ width: 32, height: 32 }}>
+                        {userValue.name[0]}
+                    </Avatar>
+                </IconButton>
+                <Menu
+                    id="menu-appbar"
+                    anchorEl={anchorElUser}
+                    open={Boolean(anchorElUser)}
+                    onClose={handleCloseUser}
+                >
+                    <MenuItem onClick={handleCloseUser}>
+                        <Avatar style={{ marginRight: 10 }} /> {userValue.name}
+                    </MenuItem>
+                    <Divider />
+                    <MenuItem onClick={handleLogOut}>
+                        <ListItemIcon>
+                            <Logout fontSize="small" />
+                        </ListItemIcon>
+                        Logout
+                    </MenuItem>
+                </Menu>
+            </Toolbar>
+        </AppBar>
     )
 }
 
