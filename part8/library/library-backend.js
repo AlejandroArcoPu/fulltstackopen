@@ -108,7 +108,7 @@ const typeDefs = `
     genres: [String]
   }
   type Author {
-    name: String!
+    name: String
     born: Int
     id: ID!
     bookCount: Int!
@@ -159,6 +159,13 @@ const resolvers = {
           },
         });
       }
+      if (!authors.map((author) => author.name).includes(args.author))
+        authors = authors.concat({
+          name: args.author,
+          id: uuidv4(),
+          born: null,
+          bookCount: 1,
+        });
       const newBook = { ...args, id: uuidv4() };
       books = books.concat(newBook);
       return newBook;
